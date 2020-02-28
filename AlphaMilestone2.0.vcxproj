@@ -124,6 +124,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="em.cpp" />
+    <ClCompile Include="Icon.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Chapter2.h" />
+    <ClInclude Include="Icon.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
