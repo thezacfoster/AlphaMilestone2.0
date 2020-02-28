@@ -124,6 +124,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="em.cpp" />
+    <ClCompile Include="functions.cpp" />
     <ClCompile Include="Icon.cpp" />
     <ClCompile Include="Ruins.cpp" />
   </ItemGroup>
