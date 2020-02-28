@@ -1,3 +1,9 @@
+/* Project: CS395 Alpha Milestone
+-- Project Description: An experimental experience manager for the Camelot Virtual Environment.
+-- Authors: Jake Hayden, John Colfer, Mac McNerney, Zac Foster
+-- File: Chapter2.h
+-- File Description: A file that defines a class representing an interaction within Camelot.
+*/
 #include "icon.h"
 using namespace std;
 

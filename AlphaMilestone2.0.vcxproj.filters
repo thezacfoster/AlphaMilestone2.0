@@ -13,6 +13,12 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Source Files\Places">
+      <UniqueIdentifier>{20bfe935-f8cc-4abe-a6cc-7e6c6d5f9ac7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Places">
+      <UniqueIdentifier>{248f8bc7-134a-41e6-8bab-ede163a33a36}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="em.cpp">
@@ -28,6 +34,9 @@
     </ClInclude>
     <ClInclude Include="Icon.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Ruins.h">
+      <Filter>Header Files\Places</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
