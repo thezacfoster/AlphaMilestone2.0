@@ -3,7 +3,7 @@
 -- Authors: Jake Hayden, John Colfer, Mac McNerney, Zac Foster
 -- File: Ruins.h
 -- File Description:
---		A file that describes a class representing the ruins location in the game. Coincides with the 
+--		A file that describes a class representing the ruins location in the game. Coincides with the
 --		"Ruins" Place in Camelot, and contains data and code for what can occur in this location.
 */
 #pragma once
@@ -13,19 +13,19 @@
 
 using namespace std;
 
-class Ruins {
+class City {
 public:
-	Ruins();
-	Ruins(string name); //overloaded constructor for giving the location a Camelot name immediately
+	City();
+	City(string name); //overloaded constructor for giving the location a Camelot name immediately
 
 	//functions for enabling/disabling furniture
-	void enableDirtPile(bool enabled);
+	void enableBench(bool enabled);
+	void enableFountain(bool enabled);
 	void enablePlant(bool enabled);
-	void enableAltar(bool enabled);
-	void enableThrone(bool enabled);
-	void enableChest(bool enabled);
+	void enableBarrel(bool enabled);
+	void enableHorse(bool enabled);
 
-	
+
 
 	// name of the ruins place for Camelot's use
 	string name;
@@ -34,13 +34,13 @@ public:
 	vector<Icon> icons;
 
 	// names of all of the furniture
-	string DirtPile, Plant, Altar, Throne, Chest;
-	
+	string Bench, Fountain, Plant, Barrel, Horse;
+
 	// names of all the entrances
-	string Exit;
+	string NorthEnd, EastEnd, WestEnd, GreenHouseDoor, BrownHouseDoor, RedHouseDoor, BlueHouseDoor;
 
 	// inventories for furniture in this place
-	vector<string> dirtPileInv, chestInv;
+	vector<string> barrelInv;
 
 	//accessing common function calls
 	functions function;

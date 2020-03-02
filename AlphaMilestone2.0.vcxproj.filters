@@ -33,6 +33,18 @@
     <ClCompile Include="functions.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Chapter2.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Cottage.cpp">
+      <Filter>Source Files\Places</Filter>
+    </ClCompile>
+    <ClCompile Include="ForestPath.cpp">
+      <Filter>Source Files\Places</Filter>
+    </ClCompile>
+    <ClCompile Include="City.cpp">
+      <Filter>Source Files\Places</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Chapter2.h">
@@ -42,6 +54,18 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Ruins.h">
+      <Filter>Header Files\Places</Filter>
+    </ClInclude>
+    <ClInclude Include="functions.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Cottage.h">
+      <Filter>Header Files\Places</Filter>
+    </ClInclude>
+    <ClInclude Include="ForestPath.h">
+      <Filter>Header Files\Places</Filter>
+    </ClInclude>
+    <ClInclude Include="City.h">
       <Filter>Header Files\Places</Filter>
     </ClInclude>
   </ItemGroup>

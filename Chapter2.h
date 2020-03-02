@@ -7,6 +7,8 @@
 #pragma once
 #include <vector>
 #include "icon.h"
+#include "Ruins.h"
+#include "functions.h"
 
 using namespace std;
 
@@ -18,25 +20,30 @@ public:
 	void run(); // begins chapter 2's execution
 	
 	// location setup functions. return true if setup was successful.
-	bool setupRuins();
+	bool setupRuins(string name);
 
 	// location execution functions.
 	void runRuins();
 
+	void flashback1();
+
+	
+
 	// interactions relevant to this chapter.
 	vector<Icon> icons;
 
+	Ruins currentRuins;
+
 	// character inventories for this chapter (to be moved to a universal story class)
-	vector<string> playerInv;
-	vector<string> grandmotherInv;
-	vector<string> sellerInv;
+	vector<string> arlanInv;
 
 	// conditionals relevant to this chapter.
-	bool has_coin;
-	bool has_apple;
-	bool has_sword;
+	bool inCurrentRuins;
 	vector<bool> checks;
 
 	// parser string for this chapter.
 	string modified_I;
+
+	//accessing common functions
+	functions function;
 };
