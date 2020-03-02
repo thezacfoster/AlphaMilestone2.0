@@ -123,7 +123,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="City.cpp" />
+    <ClCompile Include="Cottage.cpp" />
     <ClCompile Include="em.cpp" />
+    <ClCompile Include="ForestPath.cpp" />
     <ClCompile Include="functions.cpp" />
     <ClCompile Include="Icon.cpp" />
     <ClCompile Include="Ruins.cpp" />
@@ -131,6 +134,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Chapter2.h" />
+    <ClInclude Include="City.h" />
+    <ClInclude Include="Cottage.h" />
+    <ClInclude Include="ForestPath.h" />
     <ClInclude Include="functions.h" />
     <ClInclude Include="Icon.h" />
     <ClInclude Include="Ruins.h" />
