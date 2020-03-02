@@ -20,13 +20,14 @@ Chapter2::~Chapter2() {
 
 bool Chapter2::runSetup() { // runs initial setup for chapter 2. returns true if setup was successful.
 	//location setup calls
-	setupRuins("CurrentRuins");
+	setupCurrentRuins("CurrentRuins");
 
 	return true;
 }
 
 void Chapter2::run() { // begins chapter 2's execution
-	runRuins();
+	runCurrentRuins();
+	
 }
 
 //Flashback execution function
@@ -57,7 +58,7 @@ void Chapter2::flashback1() {
 }
 
 // location setup functions. return true if setup was successful.
-bool Chapter2::setupRuins(string name) {
+bool Chapter2::setupCurrentRuins(string name) {
 	currentRuins = Ruins(name);
 
 	//character setup
@@ -73,7 +74,7 @@ bool Chapter2::setupRuins(string name) {
 }
 
 // location execution functions.
-void Chapter2::runRuins() {
+void Chapter2::runCurrentRuins() {
 	while (true) {
 		string i;
 		getline(cin, i);
@@ -81,54 +82,18 @@ void Chapter2::runRuins() {
 		//Gets the first word that isn't "input"
 		modified_I = function.splitInput(i, 6, false);
 
-		//If it's under the "Selected" keyword
-		if (modified_I == "Selected") {
+		bool inputWasCommon = function.checkCommonKeywords(i, modified_I, "Arlan", arlanInv);
 
-			modified_I = function.splitInput(i, 0, true);
-
-			if (modified_I == "Start") {
-				function.StartOption("Arlan");
-
+		if (!inputWasCommon) {
+			//If it's under the "Talk" keyword
+			if (modified_I == "Talk") {
+				modified_I = function.splitInput(i, 0, true);
 			}
-			else if (modified_I == "Resume") {
-				function.Action("HideMenu()", true);
-				function.Action("EnableInput()", true);
-				function.Action("EnableInput()", true);
-			}
-			else if (modified_I == "Quit") {
-				function.Action("Quit()", true);
-			}
-		}
-		//If it's under the "Key" keyword
-		else if (modified_I == "Key") {
-
-			modified_I = function.splitInput(i, 0, true);
-			if (modified_I == "Inventory") {
-				function.Action("ClearList()", true);
-				for (string item : arlanInv) {
-					function.Action("AddToList(" + item + ")", true);
+			//if the player is in the CurrentRuins
+			else if (inCurrentRuins) {
+				if (modified_I == "Examine") {
+					flashback1();
 				}
-				function.Action("ShowList(Arlan)", true);
-			}
-			else if (modified_I == "Pause") {
-				function.Action("DisableInput()", true);
-				function.Action("ShowMenu()", true);
-			}
-		}
-
-		//If it's under the "Close" keyword
-		else if (modified_I == "Close") {
-			function.CloseList();
-		}
-
-		//If it's under the "Talk" keyword
-		else if (modified_I == "Talk") {
-			modified_I = function.splitInput(i, 0, true);
-		}
-		//if the player is in the CurrentRuins
-		else if (inCurrentRuins) {
-			if (modified_I == "Examine") {
-				flashback1();
 			}
 		}
 	}

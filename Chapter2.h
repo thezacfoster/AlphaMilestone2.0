@@ -20,10 +20,10 @@ public:
 	void run(); // begins chapter 2's execution
 	
 	// location setup functions. return true if setup was successful.
-	bool setupRuins(string name);
+	bool setupCurrentRuins(string name);
 
 	// location execution functions.
-	void runRuins();
+	void runCurrentRuins();
 
 	void flashback1();
 

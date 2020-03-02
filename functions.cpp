@@ -142,6 +142,49 @@ string functions::splitInput(string input, int numToSkip, bool reverse) {
 	return output;
 }
 
+// performs actions for the most common keywords received from Camelot
+bool functions::checkCommonKeywords(string input, string modifiedInput, string playerName, vector<string> playerInv) {
+	//If it's under the "Selected" keyword
+	if (modifiedInput == "Selected") {
+
+		modifiedInput = splitInput(input, 0, true);
+
+		if (modifiedInput == "Start") {
+			StartOption(playerName);
+
+		}
+		else if (modifiedInput == "Resume") {
+			Action("HideMenu()", true);
+			Action("EnableInput()", true);
+			Action("EnableInput()", true);
+		}
+		else if (modifiedInput == "Quit") {
+			Action("Quit()", true);
+		}
+	}
+	//If it's under the "Key" keyword
+	else if (modifiedInput == "Key") {
+
+		modifiedInput = splitInput(input, 0, true);
+		if (modifiedInput == "Inventory") {
+			Action("ClearList()", true);
+			for (string item : playerInv) {
+				Action("AddToList(" + item + ")", true);
+			}
+			Action("ShowList(" + playerName + ")", true);
+		}
+		else if (modifiedInput == "Pause") {
+			Action("DisableInput()", true);
+			Action("ShowMenu()", true);
+		}
+	}
+
+	//If it's under the "Close" keyword
+	else if (modifiedInput == "Close") {
+		CloseList();
+	}
+}
+
 //Closing narration box
 void functions::CloseList() {
 	Action("HideList()", true);
