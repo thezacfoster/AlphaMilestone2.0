@@ -30,6 +30,9 @@ public:
 	// name of the ruins place for Camelot's use
 	string name;
 
+	// icons relevant to this location only
+	vector<Icon> icons;
+
 	// names of all of the furniture
 	string DirtPile, Plant, Altar, Throne, Chest;
 	

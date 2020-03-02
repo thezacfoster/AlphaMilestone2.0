@@ -117,8 +117,8 @@ bool Chapter2::setupRuins(string name) {
 	function.SetupCharacter("Arlan", "B", "Peasant", "Spiky", "Brown", "CurrentRuins.Exit");
 
 	//icons
-	icons.push_back(Icon("Examine", "Hand", "CurrentRuins.Altar", "Examine the Altar", "true"));
-	function.SetupIcons(icons);
+	currentRuins.icons.push_back(Icon("Examine", "Hand", "CurrentRuins.Altar", "Examine the Altar", "true"));
+	function.SetupIcons(currentRuins.icons);
 
 	function.Action("ShowMenu()", true);
 
