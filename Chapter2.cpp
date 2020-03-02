@@ -1,27 +1,28 @@
 /* Project: CS395 Alpha Milestone
 -- Project Description: An experimental experience manager for the Camelot Virtual Environment.
 -- Authors: Jake Hayden, John Colfer, Mac McNerney, Zac Foster
--- File: em.cpp
--- File Description: The primary execution location of the experience manager.
+-- File: Chapter2.cpp
+-- File Description: The execution related to Chapter 2.
 */
 #include "Chapter2.h"
 //#include "functions.cpp"
-
-
 using namespace std;
 
 Chapter2::Chapter2() {
 	runSetup();
 	run();
 }
+
 Chapter2::~Chapter2() {
 }
+
 bool Chapter2::runSetup() { // runs initial setup for chapter 2. returns true if setup was successful.
 	//location setup calls
 	setupRuins("CurrentRuins");
 
 	return true;
 }
+
 void Chapter2::run() { // begins chapter 2's execution
 	runRuins();
 }
