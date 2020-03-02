@@ -8,6 +8,7 @@
 #include <vector>
 #include "icon.h"
 #include "Ruins.h"
+#include "Cottage.h"
 #include "functions.h"
 
 using namespace std;
@@ -21,9 +22,11 @@ public:
 	
 	// location setup functions. return true if setup was successful.
 	bool setupRuins(string name);
+	bool setupCottage(string name);
 
 	// location execution functions.
 	void runRuins();
+	void runCottage();
 
 	void flashback1();
 
@@ -33,9 +36,12 @@ public:
 	vector<Icon> icons;
 
 	Ruins currentRuins;
+	Cottage currentCottage;
+	
 
 	// character inventories for this chapter (to be moved to a universal story class)
 	vector<string> arlanInv;
+	vector<string> mathiasInv;
 
 	// conditionals relevant to this chapter.
 	bool inCurrentRuins;

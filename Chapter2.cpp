@@ -18,13 +18,15 @@ Chapter2::~Chapter2() {
 
 bool Chapter2::runSetup() { // runs initial setup for chapter 2. returns true if setup was successful.
 	//location setup calls
-	setupRuins("CurrentRuins");
+	//setupRuins("CurrentRuins");
+	setupCottage("CurrentCottage");
 
 	return true;
 }
 
 void Chapter2::run() { // begins chapter 2's execution
-	runRuins();
+	runCottage();
+	//runRuins();
 }
 
 //Flashback execution function
@@ -63,6 +65,25 @@ bool Chapter2::setupRuins(string name) {
 	//icons
 	currentRuins.icons.push_back(Icon("Examine", "Hand", "CurrentRuins.Altar", "Examine the Altar", "true"));
 	function.SetupIcons(currentRuins.icons);
+
+	function.Action("ShowMenu()", true);
+
+	return true;
+}
+
+bool Chapter2::setupCottage(string name) {
+	currentCottage = Cottage(name);
+
+	function.Action("CreateItem(Letter, OpenScroll)", true);
+	function.Action("SetPosition(Letter, CurrentCottage.Table)", true);
+
+	//character setup
+	function.SetupCharacter("Mathias", "F", "LightArmour", "Long", "Brown", "CurrentCottage.Bed");
+
+	//icons
+	currentCottage.icons.push_back(Icon("Open", "Exit", "CurrentCottage.Door", "Leave the Room", "true"));
+	currentCottage.icons.push_back(Icon("Read", "Research", "Letter", "Read the Letter", "true"));
+	function.SetupIcons(currentCottage.icons);
 
 	function.Action("ShowMenu()", true);
 
@@ -128,5 +149,66 @@ void Chapter2::runRuins() {
 				flashback1();
 			}
 		}
+	}
+}
+
+void Chapter2::runCottage() {
+	while (true) {
+		string i;
+		getline(cin, i);
+
+		//Gets the first word that isn't "input"
+		modified_I = function.splitInput(i, 6, false);
+
+		//If it's under the "Selected" keyword
+		if (modified_I == "Selected") {
+
+			modified_I = function.splitInput(i, 0, true);
+
+			if (modified_I == "Start") {
+				function.StartOption("Mathias");
+
+			}
+			else if (modified_I == "Resume") {
+				function.Action("HideMenu()", true);
+				function.Action("EnableInput()", true);
+				function.Action("EnableInput()", true);
+			}
+			else if (modified_I == "Quit") {
+				function.Action("Quit()", true);
+			}
+		}
+		//If it's under the "Key" keyword
+		else if (modified_I == "Key") {
+
+			modified_I = function.splitInput(i, 0, true);
+			if (modified_I == "Inventory") {
+				function.Action("ClearList()", true);
+				for (string item : mathiasInv) {
+					function.Action("AddToList(" + item + ")", true);
+				}
+				function.Action("ShowList(Mathias)", true);
+			}
+			else if (modified_I == "Pause") {
+				function.Action("DisableInput()", true);
+				function.Action("ShowMenu()", true);
+			}
+		}
+
+		//If it's under the "Close" keyword
+		else if (modified_I == "Close") {
+			function.CloseList();
+		}
+
+		//If it's under the "Talk" keyword
+		else if (modified_I == "Talk") {
+			modified_I = function.splitInput(i, 0, true);
+		}
+		//if the player is in the CurrentRuins
+		//else if (inCurrentRuins) {
+			//if (modified_I == "Examine") {
+			//	flashback1();
+			//}
+		//}
 	}
 }
