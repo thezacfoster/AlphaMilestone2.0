@@ -15,6 +15,7 @@ using namespace std;
 int main() {
 	Chapter2();
 
+	/*
 	//----------Pre architecture modification, mac part 1----------
 		//Place Creations
 		Action("CreatePlace(CurrentTown, City)", true);
@@ -189,4 +190,5 @@ int main() {
 			}
 			//----------inventory----------
 			//----------Pre architecture modification, mac part 1----------
+			*/
 }
