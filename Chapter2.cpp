@@ -19,14 +19,18 @@ Chapter2::~Chapter2() {
 bool Chapter2::runSetup() { // runs initial setup for chapter 2. returns true if setup was successful.
 	//location setup calls
 	//setupRuins("CurrentRuins");
-	setupCottage("CurrentCottage");
+	//setupCottage("CurrentCottage");
+	//setupForestPath("CurrentForestPath");
+	setupCity("CurrentCity");
 
 	return true;
 }
 
 void Chapter2::run() { // begins chapter 2's execution
-	runCottage();
+	//runCottage();
 	//runRuins();
+	//runForestPath();
+	runCity();
 }
 
 //Flashback execution function
@@ -89,6 +93,35 @@ bool Chapter2::setupCottage(string name) {
 
 	return true;
 }
+
+bool Chapter2::setupForestPath(string name) {
+	currentForestPath = ForestPath(name);
+
+	//character setup
+	function.SetupCharacter("Mathias", "F", "LightArmour", "Long", "Brown", "CurrentForestPath.EastEnd");
+
+	//icons
+
+	function.Action("ShowMenu()", true);
+
+	return true;
+}
+
+bool Chapter2::setupCity(string name) {
+	currentCity = City(name);
+
+	//character setup
+	function.SetupCharacter("Mathias", "F", "LightArmour", "Long", "Brown", "CurrentCity.WestEnd");
+
+	//icons
+
+	function.Action("ShowMenu()", true);
+
+	return true;
+}
+
+
+
 
 // location execution functions.
 void Chapter2::runRuins() {
@@ -210,5 +243,115 @@ void Chapter2::runCottage() {
 			//	flashback1();
 			//}
 		//}
+	}
+}
+
+void Chapter2::runForestPath() {
+	while (true) {
+		string i;
+		getline(cin, i);
+
+		//Gets the first word that isn't "input"
+		modified_I = function.splitInput(i, 6, false);
+
+		//If it's under the "Selected" keyword
+		if (modified_I == "Selected") {
+
+			modified_I = function.splitInput(i, 0, true);
+
+			if (modified_I == "Start") {
+				function.StartOption("Mathias");
+
+			}
+			else if (modified_I == "Resume") {
+				function.Action("HideMenu()", true);
+				function.Action("EnableInput()", true);
+				function.Action("EnableInput()", true);
+			}
+			else if (modified_I == "Quit") {
+				function.Action("Quit()", true);
+			}
+		}
+		//If it's under the "Key" keyword
+		else if (modified_I == "Key") {
+
+			modified_I = function.splitInput(i, 0, true);
+			if (modified_I == "Inventory") {
+				function.Action("ClearList()", true);
+				for (string item : mathiasInv) {
+					function.Action("AddToList(" + item + ")", true);
+				}
+				function.Action("ShowList(Mathias)", true);
+			}
+			else if (modified_I == "Pause") {
+				function.Action("DisableInput()", true);
+				function.Action("ShowMenu()", true);
+			}
+		}
+
+		//If it's under the "Close" keyword
+		else if (modified_I == "Close") {
+			function.CloseList();
+		}
+
+		//If it's under the "Talk" keyword
+		else if (modified_I == "Talk") {
+			modified_I = function.splitInput(i, 0, true);
+		}
+	}
+}
+
+void Chapter2::runCity() {
+	while (true) {
+		string i;
+		getline(cin, i);
+
+		//Gets the first word that isn't "input"
+		modified_I = function.splitInput(i, 6, false);
+
+		//If it's under the "Selected" keyword
+		if (modified_I == "Selected") {
+
+			modified_I = function.splitInput(i, 0, true);
+
+			if (modified_I == "Start") {
+				function.StartOption("Mathias");
+
+			}
+			else if (modified_I == "Resume") {
+				function.Action("HideMenu()", true);
+				function.Action("EnableInput()", true);
+				function.Action("EnableInput()", true);
+			}
+			else if (modified_I == "Quit") {
+				function.Action("Quit()", true);
+			}
+		}
+		//If it's under the "Key" keyword
+		else if (modified_I == "Key") {
+
+			modified_I = function.splitInput(i, 0, true);
+			if (modified_I == "Inventory") {
+				function.Action("ClearList()", true);
+				for (string item : mathiasInv) {
+					function.Action("AddToList(" + item + ")", true);
+				}
+				function.Action("ShowList(Mathias)", true);
+			}
+			else if (modified_I == "Pause") {
+				function.Action("DisableInput()", true);
+				function.Action("ShowMenu()", true);
+			}
+		}
+
+		//If it's under the "Close" keyword
+		else if (modified_I == "Close") {
+			function.CloseList();
+		}
+
+		//If it's under the "Talk" keyword
+		else if (modified_I == "Talk") {
+			modified_I = function.splitInput(i, 0, true);
+		}
 	}
 }
