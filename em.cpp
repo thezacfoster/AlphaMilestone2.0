@@ -7,10 +7,11 @@
 
 #include <iostream>
 #include <string>
+#include "Chapter2.h"
+
 
 using namespace std;
 
 int main() {
-
-
+	Chapter2();
 }

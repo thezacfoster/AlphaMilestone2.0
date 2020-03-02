@@ -127,9 +127,11 @@
     <ClCompile Include="functions.cpp" />
     <ClCompile Include="Icon.cpp" />
     <ClCompile Include="Ruins.cpp" />
+    <ClCompile Include="Chapter2.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Chapter2.h" />
+    <ClInclude Include="functions.h" />
     <ClInclude Include="Icon.h" />
     <ClInclude Include="Ruins.h" />
   </ItemGroup>

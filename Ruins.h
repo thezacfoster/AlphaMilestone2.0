@@ -9,6 +9,8 @@
 #pragma once
 #include <vector>
 #include <string>
+#include "functions.h"
+
 using namespace std;
 
 class Ruins {
@@ -23,15 +25,20 @@ public:
 	void enableThrone(bool enabled);
 	void enableChest(bool enabled);
 
+	
+
 	// name of the ruins place for Camelot's use
 	string name;
 
 	// names of all of the furniture
-	string dirtPile, plant, altar, throne, chest;
+	string DirtPile, Plant, Altar, Throne, Chest;
 	
 	// names of all the entrances
-	string exit;
+	string Exit;
 
 	// inventories for furniture in this place
 	vector<string> dirtPileInv, chestInv;
+
+	//accessing common function calls
+	functions function;
 };
