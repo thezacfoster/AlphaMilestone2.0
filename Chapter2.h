@@ -32,6 +32,8 @@ public:
 	// interactions relevant to this chapter.
 	vector<Icon> icons;
 
+	Ruins currentRuins;
+
 	// character inventories for this chapter (to be moved to a universal story class)
 	vector<string> arlanInv;
 

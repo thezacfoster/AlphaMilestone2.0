@@ -19,17 +19,7 @@ Chapter2::~Chapter2() {
 bool Chapter2::runSetup() { // runs initial setup for chapter 2. returns true if setup was successful.
 	//location setup calls
 	setupRuins("CurrentRuins");
-	
-	//character setup
-	function.SetupCharacter("Arlan", "B", "Peasant", "Spiky", "Brown", "CurrentRuins.Exit");
 
-	//icons
-	icons.push_back(Icon("Examine", "Hand", "CurrentRuins.Altar", "Examine the Altar", "true"));
-	function.SetupIcons(icons);
-	
-	
-	
-	function.Action("ShowMenu()", true);
 	return true;
 }
 void Chapter2::run() { // begins chapter 2's execution
@@ -121,7 +111,16 @@ void Chapter2::flashback1() {
 
 // location setup functions. return true if setup was successful.
 bool Chapter2::setupRuins(string name) {
-	Ruins CurrentRuin(name);
+	currentRuins = Ruins(name);
+
+	//character setup
+	function.SetupCharacter("Arlan", "B", "Peasant", "Spiky", "Brown", "CurrentRuins.Exit");
+
+	//icons
+	icons.push_back(Icon("Examine", "Hand", "CurrentRuins.Altar", "Examine the Altar", "true"));
+	function.SetupIcons(icons);
+
+	function.Action("ShowMenu()", true);
 
 	return true;
 }
