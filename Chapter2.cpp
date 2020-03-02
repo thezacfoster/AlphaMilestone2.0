@@ -64,7 +64,7 @@ void Chapter2::run() { // begins chapter 2's execution
 			modified_I = function.splitInput(i, 0, true);
 			if (modified_I == "Inventory") {
 				function.Action("ClearList()", true);
-				for (string item : playerInv) {
+				for (string item : arlanInv) {
 					function.Action("AddToList(" + item + ")", true);
 				}
 				function.Action("ShowList(Arlan)", true);

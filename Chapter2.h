@@ -33,14 +33,10 @@ public:
 	vector<Icon> icons;
 
 	// character inventories for this chapter (to be moved to a universal story class)
-	vector<string> playerInv;
-	vector<string> grandmotherInv;
-	vector<string> sellerInv;
+	vector<string> arlanInv;
 
 	// conditionals relevant to this chapter.
 	bool inCurrentRuins;
-	bool has_apple;
-	bool has_sword;
 	vector<bool> checks;
 
 	// parser string for this chapter.
