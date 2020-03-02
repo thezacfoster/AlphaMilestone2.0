@@ -6,6 +6,8 @@
 */
 #include "Chapter2.h"
 //#include "functions.cpp"
+#include <chrono>
+#include <thread>
 using namespace std;
 
 Chapter2::Chapter2() {
@@ -46,8 +48,9 @@ void Chapter2::flashback1() {
 	}
 	function.Action("HideNarration()", true);
 	function.Action("SetExpression(Arlan, Surprised)", true);
-	function.Action("Die(Arlan)", false);
+	this_thread::sleep_for(chrono::milliseconds(500));
 	function.Action("SetCameraMode(Follow)", true);
+	function.Action("Die(Arlan)", true);
 	function.Action("FadeOut()", true);
 	
 	//
