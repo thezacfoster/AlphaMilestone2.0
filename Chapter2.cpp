@@ -23,6 +23,53 @@ bool Chapter2::runSetup() { // runs initial setup for chapter 2. returns true if
 	return true;
 }
 void Chapter2::run() { // begins chapter 2's execution
+	runRuins();
+}
+
+//Flashback execution function
+void Chapter2::flashback1() {
+	//flashback transistion
+	function.Action("WalkTo(Arlan, CurrentRuins.Altar)", true);
+	function.Action("SetCameraMode(Focus)", true);
+	function.Action("SetNarration(The air around you feels wierd. Something pulls you to a slumber.)", true);
+	function.Action("ShowNarration()", true);
+	bool inNarration = true;
+	while (inNarration) {
+		string i;
+		getline(cin, i);
+
+		if (i == "input Close Narration") {
+			function.Action("HideNarration()", true);
+			inNarration = false;
+		}
+	}
+	function.Action("HideNarration()", true);
+	function.Action("SetExpression(Arlan, Surprised)", true);
+	function.Action("Die(Arlan)", false);
+	function.Action("SetCameraMode(Follow)", true);
+	function.Action("FadeOut()", true);
+	
+	//
+}
+
+// location setup functions. return true if setup was successful.
+bool Chapter2::setupRuins(string name) {
+	currentRuins = Ruins(name);
+
+	//character setup
+	function.SetupCharacter("Arlan", "B", "Peasant", "Spiky", "Brown", "CurrentRuins.Exit");
+
+	//icons
+	currentRuins.icons.push_back(Icon("Examine", "Hand", "CurrentRuins.Altar", "Examine the Altar", "true"));
+	function.SetupIcons(currentRuins.icons);
+
+	function.Action("ShowMenu()", true);
+
+	return true;
+}
+
+// location execution functions.
+void Chapter2::runRuins() {
 	while (true) {
 		string i;
 		getline(cin, i);
@@ -81,51 +128,4 @@ void Chapter2::run() { // begins chapter 2's execution
 			}
 		}
 	}
-}
-
-//Flashback execution function
-void Chapter2::flashback1() {
-	//flashback transistion
-	function.Action("WalkTo(Arlan, CurrentRuins.Altar)", true);
-	function.Action("SetCameraMode(Focus)", true);
-	function.Action("SetNarration(The air around you feels wierd. Something pulls you to a slumber.)", true);
-	function.Action("ShowNarration()", true);
-	bool inNarration = true;
-	while (inNarration) {
-		string i;
-		getline(cin, i);
-
-		if (i == "input Close Narration") {
-			function.Action("HideNarration()", true);
-			inNarration = false;
-		}
-	}
-	function.Action("HideNarration()", true);
-	function.Action("SetExpression(Arlan, Surprised)", true);
-	function.Action("Die(Arlan)", false);
-	function.Action("SetCameraMode(Follow)", true);
-	function.Action("FadeOut()", true);
-	
-	//
-}
-
-// location setup functions. return true if setup was successful.
-bool Chapter2::setupRuins(string name) {
-	currentRuins = Ruins(name);
-
-	//character setup
-	function.SetupCharacter("Arlan", "B", "Peasant", "Spiky", "Brown", "CurrentRuins.Exit");
-
-	//icons
-	currentRuins.icons.push_back(Icon("Examine", "Hand", "CurrentRuins.Altar", "Examine the Altar", "true"));
-	function.SetupIcons(currentRuins.icons);
-
-	function.Action("ShowMenu()", true);
-
-	return true;
-}
-
-// location execution functions.
-void Chapter2::runRuins() {
-
 }
