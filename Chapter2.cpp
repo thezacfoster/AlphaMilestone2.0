@@ -139,24 +139,6 @@ bool Chapter2::setupCurrentRuins(string name) {
 	return true;
 }
 
-bool Chapter2::setupPastRuins(string name) {
-	pastRuins = Ruins(name);
-
-	function.SetupCharacter("Mathias", "F", "LightArmour", "Long", "Brown", name + ".Exit");
-	function.SetupCharacter("Archie", "D", "Priest", "Mage_Full", "Black", name + ".Altar");
-
-	function.Action("CreateItem(MysteriousSkull, Skull)", true);
-	function.Action("SetPosition(MysteriousSkull, " + name + ".Altar)", true);
-	function.Action("Face(Archie, MysteriousSkull)", true);
-	function.Action("Kneel(Archie)", true);
-
-	pastRuins.icons.push_back(Icon("Talk to Archie", "Talk", "Archie", "Talk to Archie", "true"));
-	function.SetupIcons(pastRuins.icons);
-
-	return true;
-
-}
-
 bool Chapter2::setupPastCottage(string name) {
 	pastCottage = Cottage(name);
 
@@ -208,9 +190,16 @@ bool Chapter2::setupPastRuins(string name) {
 
 	//character setup
 	//function.SetupCharacter("Mathias", "F", "LightArmour", "Long", "Brown", "PastCity.WestEnd");
+	function.SetupCharacter("Archie", "D", "Priest", "Mage_Full", "Black", name + ".Altar");
 
 	//icons
+	pastRuins.icons.push_back(Icon("Talk to Archie", "Talk", "Archie", "Talk to Archie", "true"));
+	function.SetupIcons(pastRuins.icons);
 
+	function.Action("CreateItem(MysteriousSkull, Skull)", true);
+	function.Action("SetPosition(MysteriousSkull, " + name + ".Altar)", true);
+	function.Action("Face(Archie, MysteriousSkull)", true);
+	function.Action("Kneel(Archie)", true);
 	//function.Action("ShowMenu()", true);
 
 	return true;
@@ -554,7 +543,7 @@ void Chapter2::runPastCity() {
 
 void Chapter2::runPastRuins() {
 	//function.Action("Enter(" + character + ", " + entrance + ", true)", true);
-	while (inPastRuins) {
+	while (true) {
 		string i;
 		getline(cin, i);
 
@@ -567,13 +556,52 @@ void Chapter2::runPastRuins() {
 			//If it's under the "Talk" keyword
 			if (modified_I == "Talk") {
 				modified_I = function.splitInput(i, 0, true);
+
+				if (modified_I == "Archie") {
+					function.SetupDialog("Mathias", "Archie", false);
+					function.Action("SetDialog(\"(He appears to be mumbling to himself) [getAttention|(Get his attention)]\")", false);
+				}
 			}
-		}
-		if (i == "input arrived Mathias position PastRuins.Exit") {
-			function.Transition("Mathias", "PastRuins.Exit", "PastForestPath.EastEnd");
-			inPastForestPath = true;
-			inPastRuins = false;
-			runCurrentForestPath();
+
+			else if (modified_I == "Selected") {
+				modified_I = function.splitInput(i, 0, true);
+
+				if (modified_I == "getAttention") {
+					function.Action("ClearDialog()", true);
+					function.Action("SetDialog(\"Ah, Mathias... you've arrived. I suppose this is inevitable. [question|What are you talking about?]\")", false);
+				}
+
+				if (modified_I == "question") {
+					function.Action("ClearDialog()", true);
+					function.Action("SetDialog(\"I'm afraid this relic is more powerful than either of us could ever have imagined. I cannot let it fall into another's hands. I am sorry, old friend. [wait|Archie, wait-]\")", false);
+				}
+
+				if (modified_I == "wait") {
+					function.Action("ClearDialog()", true);
+					function.Action("HideDialog()", true);
+					function.Action("DisableInput()", true);
+					function.Action("WalkTo(Archie, PastRuins.Altar)", true);
+					function.Action("Face(Archie, Mathias)", true);
+					function.Action("Cast(Archie, Mathias)", true);
+					function.Action("Kneel(Mathias)", false);
+					//function.Action("Take(Archie, MysteriousSkull, PastRuins.Altar)", true);
+					function.Action("Face(Archie, MysteriousSkull)", true);
+					function.Action("SetPosition(MysteriousSkull)", true);
+					function.Action("Unpocket(Archie, MysteriousSkull)", true);
+					function.Action("WalkTo(Archie, PastRuins.Exit)", true);
+					function.Action("SetPosition(Archie)", true);
+					function.Action("WalkTo(Mathias, PastRuins.Altar)", true);
+					function.Action("FadeOut()", true);
+
+					function.Action("SetPosition(Arlan, CurrentRuins.Altar)", true);
+					function.Action("Kneel(Arlan)", true);
+					function.Action("SetCameraFocus(Arlan)", true);
+					function.Action("FadeIn()", false);
+					function.Action("WalkTo(Arlan, CurrentRuins.Altar)", false);
+					function.Action("SetNarration(What an odd vision...)", true);
+				}
+			}
+
 		}
 	}
 }
