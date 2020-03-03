@@ -24,15 +24,16 @@ public:
 	
 	// location setup functions. return true if setup was successful.
 	bool setupCurrentRuins(string name);
-	bool setupCottage(string name);
-	bool setupForestPath(string name);
-	bool setupCity(string name);
+	bool setupPastCottage(string name);
+	bool setupPastForestPath(string name);
+	bool setupPastCity(string name);
+	bool setupPastRuins(string name);
 
 	// location execution functions.
 	void runCurrentRuins();
-	void runCottage();
-	void runForestPath();
-	void runCity();
+	void runPastCottage();
+	void runPastForestPath();
+	void runPastCity();
 
 	void flashback1();
 

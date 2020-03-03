@@ -22,14 +22,19 @@ Chapter2::~Chapter2() {
 
 bool Chapter2::runSetup() { // runs initial setup for chapter 2. returns true if setup was successful.
 	//location setup calls
-	setupCurrentRuins("CurrentRuins");
+	//setupCurrentRuins("CurrentRuins");
+	setupPastCottage("CurrentCottage");
+	setupPastForestPath("CurrentForestPath");
+	setupPastCity("CurrentCity");
+	setupPastRuins("CurrentRuins");
 
 	return true;
 }
 
 void Chapter2::run() { // begins chapter 2's execution
-	runCurrentRuins();
-	
+	runPastCottage();
+	runPastForestPath();
+	runPastCity();
 }
 
 //Flashback execution function
@@ -75,7 +80,7 @@ bool Chapter2::setupCurrentRuins(string name) {
 	return true;
 }
 
-bool Chapter2::setupCottage(string name) {
+bool Chapter2::setupPastCottage(string name) {
 	currentCottage = Cottage(name);
 
 	function.Action("CreateItem(Letter, OpenScroll)", true);
@@ -94,7 +99,7 @@ bool Chapter2::setupCottage(string name) {
 	return true;
 }
 
-bool Chapter2::setupForestPath(string name) {
+bool Chapter2::setupPastForestPath(string name) {
 	currentForestPath = ForestPath(name);
 
 	//character setup
@@ -107,7 +112,7 @@ bool Chapter2::setupForestPath(string name) {
 	return true;
 }
 
-bool Chapter2::setupCity(string name) {
+bool Chapter2::setupPastCity(string name) {
 	currentCity = City(name);
 
 	//character setup
@@ -150,7 +155,7 @@ void Chapter2::runCurrentRuins() {
 	}
 }
 
-void Chapter2::runCottage() {
+void Chapter2::runPastCottage() {
 	while (true) {
 		string i;
 		getline(cin, i);
@@ -165,13 +170,18 @@ void Chapter2::runCottage() {
 			//If it's under the "Talk" keyword
 			if (modified_I == "Talk") {
 				modified_I = function.splitInput(i, 0, true);
+			}
+			if (modified_I == "Open") {
+				function.Action("WalkTo(Mathias, CurrentCottage.Door)", true);
+				function.Action("Exit(Mathias, CurrentCottage.Door", true);
 			}
 		}
 		
 	}
 }
 
-void Chapter2::runForestPath() {
+void Chapter2::runPastForestPath() {
+	Action("Enter(" + character + ", " + entrance + ", true)", true);
 	while (true) {
 		string i;
 		getline(cin, i);
@@ -190,7 +200,7 @@ void Chapter2::runForestPath() {
 	}
 }
 
-void Chapter2::runCity() {
+void Chapter2::runPastCity() {
 	while (true) {
 		string i;
 		getline(cin, i);
