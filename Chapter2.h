@@ -44,7 +44,6 @@ public:
 	vector<Icon> icons;
 
 	Ruins currentRuins, pastRuins;
-	Ruins currentRuins;
 	Cottage currentCottage;
 	ForestPath currentForestPath;
 	City currentCity;
