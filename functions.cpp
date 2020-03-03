@@ -152,6 +152,7 @@ bool functions::checkCommonKeywords(string input, string modifiedInput, string p
 
 		if (modifiedInput == "Start") {
 			StartOption(playerName);
+			Action("EnableInput()", true);
 		}
 		else if (modifiedInput == "Resume") {
 			Action("HideMenu()", true);
