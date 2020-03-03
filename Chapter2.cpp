@@ -49,8 +49,8 @@ bool Chapter2::runSetup() { // runs initial setup for chapter 2. returns true if
 }
 
 void Chapter2::run() { // begins chapter 2's execution
-	runPastCottage();
-	//runCurrentTown();
+	//runPastCottage();
+	runCurrentTown();
 	//runCurrentForestPath();
 	//runCurrentRuins();
 	//setupPastRuins("PastRuins");
@@ -81,7 +81,7 @@ void Chapter2::flashback1() {
 	function.Action("SetCameraMode(Follow)", true);
 	function.Action("Die(Arlan)", true);
 	function.Action("FadeOut()", true);
-
+	runPastCottage();
 	//
 }
 
@@ -143,10 +143,10 @@ bool Chapter2::setupPastCottage(string name) {
 	pastCottage = Cottage(name);
 
 	function.Action("CreateItem(Letter, OpenScroll)", true);
-	function.Action("SetPosition(Letter, PastCottage.Table)", true);
+	function.Action("SetPosition(Letter, PastCottage.Shelf)", true);
 
 	//character setup
-	function.SetupCharacter("Mathias", "F", "LightArmour", "Long", "Brown", "PastCottage.Bed");
+	function.SetupCharacter("Mathias", "F", "LightArmour", "Long", "Black", "PastCottage.Bed");
 
 	//icons
 	pastCottage.icons.push_back(Icon("Open", "Exit", "PastCottage.Door", "Leave the Room", "true"));
@@ -365,7 +365,7 @@ void Chapter2::runCurrentRuins() {
 
 		bool inputWasCommon = function.checkCommonKeywords(i, modified_I, "Arlan", arlanInv);
 
-		/*if (!inputWasCommon) {
+		if (!inputWasCommon) {
 			//If it's under the "Talk" keyword
 			if (modified_I == "Talk") {
 				modified_I = function.splitInput(i, 0, true);
@@ -377,7 +377,7 @@ void Chapter2::runCurrentRuins() {
 					flashback1();
 				}
 			}
-		}*/
+		}
 
 		if (i == "input arrived Arlan position CurrentRuins.Exit") {
 			function.Transition("Arlan", "CurrentRuins.Exit", "CurrentForestPath.EastEnd");
@@ -447,6 +447,11 @@ void Chapter2::runCurrentRuins() {
 }
 
 void Chapter2::runPastCottage() {
+	bool LetterCheck = false;
+
+	function.Action("SetCameraFocus(Mathias)", true);
+	function.Action("FadeIn()", true);
+	function.Action("EnableInput()", true);
 	while (inPastCottage) {
 		string i;
 		getline(cin, i);
@@ -456,6 +461,18 @@ void Chapter2::runPastCottage() {
 
 		bool inputWasCommon = function.checkCommonKeywords(i, modified_I, "Mathias", mathiasInv);
 
+		if (modified_I == "Read") {
+			function.Action("WalkTo(Mathias, Letter)", true);
+			function.Action("SetNarration(Mathias we need to discuss what to do about that artifact we found. Meet me by the ruins so we can discuss)", true);
+			function.Action("ShowNarration()", true);
+			LetterCheck = true;
+
+		}
+
+		if (modified_I == "Close") {
+			function.Action("HideNarration()", true);
+		}
+
 		if (!inputWasCommon) {
 
 			//If it's under the "Talk" keyword
@@ -464,11 +481,18 @@ void Chapter2::runPastCottage() {
 			}
 
 			if (modified_I == "Open") {
-				function.Transition("Mathias", "PastCottage.Door", "PastCity.GreenHouseDoor");
-				inPastCottage = false;
-				inPastCity = true;
-				runPastCity();
+				if (LetterCheck) {
+					function.Transition("Mathias", "PastCottage.Door", "PastCity.GreenHouseDoor");
+					inPastCottage = false;
+					inPastCity = true;
+					runPastCity();
+				}
+				else {
+					function.Action("SetNarration(I should read that letter I left on the shelf)", true);
+					function.Action("ShowNarration()", true);
+				}
 			}
+
 		}
 
 	}
