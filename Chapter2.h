@@ -21,8 +21,10 @@ public:
 	~Chapter2();
 	bool runSetup(); // runs initial setup for chapter 2. returns true if setup was successful.
 	void run(); // begins chapter 2's execution
-	
+
 	// location setup functions. return true if setup was successful.
+	bool setupCurrentTown(string name);
+	bool setupCurrentForestPath(string name);
 	bool setupCurrentRuins(string name);
 	bool setupPastRuins(string name);
 	bool setupPastCottage(string name);
@@ -32,6 +34,8 @@ public:
 	bool setupPastCity(string name);
 
 	// location execution functions.
+	void runCurrentTown();
+	void runCurrentForestPath();
 	void runCurrentRuins();
 	void runPastRuins();
 	void runPastForestPath();
@@ -42,17 +46,17 @@ public:
 
 	void flashback1();
 
-	
+
 
 	// interactions relevant to this chapter.
 	vector<Icon> icons;
 
 	Ruins currentRuins, pastRuins;
-	Cottage currentCottage;
-	ForestPath currentForestPath;
-	City currentCity;
+	Cottage currentCottage, pastCottage;
+	ForestPath currentForestPath, pastForestPath;
+	City currentCity, pastCity;
 
-	
+
 
 	// character inventories for this chapter (to be moved to a universal story class)
 	vector<string> arlanInv;
