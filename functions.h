@@ -40,6 +40,9 @@ public:
 	//at the end of the string
 	string splitInput(string input, int numToSkip, bool reverse);
 
+	// performs actions for the most common keywords received from Camelot
+	bool checkCommonKeywords(string input, string modifiedInput, string playerName, vector<string> playerInv);
+
 	//Closing narration box
 	void CloseList();
 
