@@ -62,10 +62,14 @@ bool Chapter2::setupCurrentRuins(string name) {
 	currentRuins = Ruins(name);
 
 	//character setup
-	function.SetupCharacter("Arlan", "B", "Peasant", "Spiky", "Brown", "CurrentRuins.Exit");
+	function.SetupCharacter("Arlan", "B", "LightArmour", "Long", "Brown", "CurrentRuins.Exit");
+
+	//items and their placement
+	function.Action("CreateItem(LeaderFlashPotion, GreenPotion)", true);//potion to activate flashback 1
+	function.Action("SetPosition(LeaderFlashPotion, CurrentRuins.Altar)", true);
 
 	//icons
-	currentRuins.icons.push_back(Icon("Examine", "Hand", "CurrentRuins.Altar", "Examine the Altar", "true"));
+	currentRuins.icons.push_back(Icon("Take", "Hand", "LeaderFlashPotion", "Take the Potion", "true"));
 	function.SetupIcons(currentRuins.icons);
 
 	function.Action("ShowMenu()", true);
@@ -100,7 +104,8 @@ void Chapter2::runCurrentRuins() {
 			}
 			//if the player is in the CurrentRuins
 			else if (inCurrentRuins) {
-				if (modified_I == "Examine") {
+				if (modified_I == "Take") {
+					function.Action("Take(Arlan, LeaderFlashPotion)", true);
 					flashback1();
 				}
 			}
