@@ -23,6 +23,8 @@ public:
 	void run(); // begins chapter 2's execution
 	
 	// location setup functions. return true if setup was successful.
+	bool setupCurrentTown(string name);
+	bool setupCurrentForestPath(string name);
 	bool setupCurrentRuins(string name);
 	//bool setupPastRuins(string name);
 	bool setupPastCottage(string name);
@@ -32,6 +34,8 @@ public:
 	bool setupPastCity(string name);
 
 	// location execution functions.
+	void runCurrentTown();
+	void runCurrentForestPath();
 	void runCurrentRuins();
 	//void runPastRuins();
 	void runPastForestPath();
