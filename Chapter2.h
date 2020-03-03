@@ -21,9 +21,11 @@ public:
 	
 	// location setup functions. return true if setup was successful.
 	bool setupCurrentRuins(string name);
+	bool setupPastRuins(string name);
 
 	// location execution functions.
 	void runCurrentRuins();
+	void runPastRuins();
 
 	void flashback1();
 
@@ -32,7 +34,7 @@ public:
 	// interactions relevant to this chapter.
 	vector<Icon> icons;
 
-	Ruins currentRuins;
+	Ruins currentRuins, pastRuins;
 
 	// character inventories for this chapter (to be moved to a universal story class)
 	vector<string> arlanInv;

@@ -27,7 +27,7 @@ bool Chapter2::runSetup() { // runs initial setup for chapter 2. returns true if
 
 void Chapter2::run() { // begins chapter 2's execution
 	runCurrentRuins();
-	
+	setupPastRuins("PastRuins");
 }
 
 //Flashback execution function
@@ -70,6 +70,15 @@ bool Chapter2::setupCurrentRuins(string name) {
 
 	function.Action("ShowMenu()", true);
 
+	return true;
+}
+
+bool Chapter2::setupPastRuins(string name) {
+	/*pastRuins = Ruins(name);
+	
+	function.Action("SetPosition(Mathias, PastRuins.Exit)", true);
+	function.SetupCharacter("Archie", "D", "Priest", "Mage_Full", "Black", "PastRuins.Altar");
+	*/
 	return true;
 }
 
