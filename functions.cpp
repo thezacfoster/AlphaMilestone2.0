@@ -142,6 +142,7 @@ string functions::splitInput(string input, int numToSkip, bool reverse) {
 	return output;
 }
 
+// performs actions for the most common keywords received from Camelot
 bool functions::checkCommonKeywords(string input, string modifiedInput, string playerName, vector<string> playerInv) {
 	bool keywordFound = true;
 	//If it's under the "Selected" keyword

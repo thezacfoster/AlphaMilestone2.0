@@ -8,6 +8,8 @@
 #include <chrono>
 #include <thread>
 //#include "functions.cpp"
+#include <chrono>
+#include <thread>
 using namespace std;
 
 Chapter2::Chapter2() {
@@ -27,6 +29,7 @@ bool Chapter2::runSetup() { // runs initial setup for chapter 2. returns true if
 
 void Chapter2::run() { // begins chapter 2's execution
 	runCurrentRuins();
+	
 }
 
 //Flashback execution function
