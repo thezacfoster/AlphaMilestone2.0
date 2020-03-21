@@ -225,3 +225,16 @@ void functions::WalkToPlace(string character, string location) {
 	Action("WalkTo(" + character + ", " + location + ")", true);
 	Action("EnableInput()", true);
 }
+
+void functions::SetupDialogText(string message, string responseKey1, string response1, string responseKey2 = "nothing", string response2 = "nothing", string responseKey3 = "nothing", string response3 = "nothing") {
+	Action("ClearDialog()", true);
+	if ((responseKey3 != "nothing") && (response3 != "nothing")) {
+		Action("SetDialog(" + message + " [" + responseKey1 + " | " + response1 + "] [" + responseKey2 + " | " + response2 + "] [" + responseKey3 + " | " + response3 + "])", true);
+	}
+	else if ((responseKey2 != "nothing") && (response2 != "nothing") && (responseKey3 == "nothing") && (response3 == "nothing")) {
+		Action("SetDialog(" + message + " [" + responseKey1 + " | " + response1 + "] [" + responseKey2 + " | " + response2 + "])", true);
+	}
+	else {
+		Action("SetDialog(" + message + " [" + responseKey1 + " | " + response1 + "])", true);
+	}
+}
