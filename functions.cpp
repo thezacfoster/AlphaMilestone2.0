@@ -219,3 +219,9 @@ void functions::AccessInventory(vector<string> inventory, string charName) {
 	}
 	Action("ShowList(" + charName + ")", true);
 }
+
+void functions::WalkToPlace(string character, string location) {
+	Action("DisableInput()", true);
+	Action("WalkTo(" + character + ", " + location + ")", true);
+	Action("EnableInput()", true);
+}

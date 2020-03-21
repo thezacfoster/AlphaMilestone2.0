@@ -55,4 +55,7 @@ public:
 	//inventory interaction
 	void AccessInventory(vector<string> inventory, string charName);
 
+	//Walk To Input Disables and Enables
+	void WalkToPlace(string character, string location);
+
 };
