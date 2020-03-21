@@ -38,6 +38,7 @@ Chapter2::~Chapter2() {
 bool Chapter2::runSetup() { // runs initial setup for chapter 2. returns true if setup was successful.
 	//location setup calls
 	setupCurrentTown("CurrentTown");
+	setupBlacksmithFoundry("BlacksmithFoundry");
 	setupCurrentForestPath("CurrentForestPath");
 	setupCurrentRuins("CurrentRuins");
 	setupPastCottage("PastCottage");
@@ -90,9 +91,46 @@ bool Chapter2::setupCurrentTown(string name) {
 	currentCity = City(name);
 
 	//character setup
-	function.SetupCharacter("Arlan", "B", "LightArmour", "Long", "Brown", "CurrentTown.Fountain");
+	function.SetupCharacter("Arlan", "B", "LightArmour", "Long", "Black", "CurrentTown.Fountain");
+	function.SetupCharacter("Apple Merchant", "C", "Merchant", "Long", "Blonde", "CurrentTown.Horse");
+	function.SetupCharacter("Town Elder", "H", "Noble", "Musketeer_Full", "Gray", "CurrentTown.Plant");
 
-	//function.Action("ShowMenu()", true);
+	//items
+	function.Action("CreateItem(MathiasSword, Sword)", true);
+	function.Action("CreateItem(Apple Money, Coin)", true);
+	function.Action("CreateItem(Elder Apple, Apple)", true);
+	function.Action("CreateItem(Broken Lock, Lock)", true);
+	function.Action("CreateItem(Storybook, BlueBook)", true);
+
+	//icons
+	//Talk To Town Elder
+	currentCity.icons.push_back(Icon("Talk To Town Elder", "Talk", "Town Elder", "Talk To Town Elder", "true"));
+	//Talk To Apple Merchant
+	currentCity.icons.push_back(Icon("Talk To Apple Merchant", "Talk", "Apple Merchant", "Talk To Apple Merchant", "true"));
+	//Buy Apple
+	currentCity.icons.push_back(Icon("Buy Apple", "Coin", "Elder Apple", "Buy Elder Apple", "true"));
+	//Pick Up MathiasSword
+	currentCity.icons.push_back(Icon("Take_MathiasSword", "Hand", "MathiasSword", "Take the sword", "true"));
+	//Enter BlacksmithFoundry
+	currentCity.icons.push_back(Icon("Enter Blacksmith Foundry", "Hand", "CurrentCity.RedHouseDoor", "Enter Blacksmith Foundry", "true"));
+
+	return true;
+}
+
+bool Chapter2::setupBlacksmithFoundry(string name) {
+	BlacksmithFoundry = Blacksmith(name);
+
+	//character setup
+	function.SetupCharacter("Blacksmith", "B", "HeavyArmour", "Musketeer_Beard", "Blonde", "BlacksmithFoundry.Anvil");
+
+	//items
+	function.Action("CreateItem(Fixed Lock, Lock)", true);
+
+	//icons
+	//Talk To Blacksmith
+	BlacksmithFoundry.icons.push_back(Icon("Talk To Blacksmith", "Talk", "Blacksmith", "Talk To Blacksmith", "true"));
+	//Exit Blacksmith Foundry
+	BlacksmithFoundry.icons.push_back(Icon("Exit Blacksmith Foundry", "Hand", "BlacksmithFoundry.Door", "Exit Blacksmith Foundry", "true"));
 
 	return true;
 }
@@ -101,17 +139,11 @@ bool Chapter2::setupCurrentForestPath(string name) {
 	currentForestPath = ForestPath(name);
 
 	//character setup
-	function.SetupCharacter("Mariah", "G", "Beggar", "Straight", "Gray", "CurrentForestPath.Well");
 
 	//items and their placement
-	function.Action("CreateItem(MathiasSword, Sword)", true);
 	function.Action("CreateItem(ArchieSpellbook, SpellBook)", true);
-	mariahInv.push_back("MathiasSword");
-	mariahInv.push_back("ArchieSpellbook");
 
 	//icons
-	currentForestPath.icons.push_back(Icon("Talk_To_Mariah", "Talk", "Mariah", "Talk To Mariah", "true"));
-	currentForestPath.icons.push_back(Icon("Take_MathiasSword", "Hand", "MathiasSword", "Take the sword", "true"));
 	currentForestPath.icons.push_back(Icon("Take_ArchieSpellbook", "Hand", "ArchieSpellbook", "Take the spellbook", "true"));
 	function.SetupIcons(currentForestPath.icons);
 

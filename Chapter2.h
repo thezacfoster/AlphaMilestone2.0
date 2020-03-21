@@ -12,6 +12,7 @@
 #include "ForestPath.h"
 #include "City.h"
 #include "functions.h"
+#include "Blacksmith.h"
 
 using namespace std;
 
@@ -24,6 +25,7 @@ public:
 
 	// location setup functions. return true if setup was successful.
 	bool setupCurrentTown(string name);
+	bool setupBlacksmithFoundry(string name);
 	bool setupCurrentForestPath(string name);
 	bool setupCurrentRuins(string name);
 	bool setupPastRuins(string name);
@@ -35,6 +37,7 @@ public:
 
 	// location execution functions.
 	void runCurrentTown();
+	//void runBlacksmithFoundry();
 	void runCurrentForestPath();
 	void runCurrentRuins();
 	void runPastRuins();
@@ -53,6 +56,7 @@ public:
 
 	Ruins currentRuins, pastRuins;
 	Cottage currentCottage, pastCottage;
+	Blacksmith BlacksmithFoundry;
 	ForestPath currentForestPath, pastForestPath;
 	City currentCity, pastCity;
 
