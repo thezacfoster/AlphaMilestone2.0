@@ -11,6 +11,7 @@
 #include "Cottage.h"
 #include "ForestPath.h"
 #include "City.h"
+#include "AlchemyShop.h" 
 #include "functions.h"
 
 using namespace std;
@@ -32,6 +33,8 @@ public:
 	bool setupPastForestPath(string name);
 	//bool setupCity(string name);
 	bool setupPastCity(string name);
+	bool setupAlchemyShop(string name);
+	bool setupCurrentCottage(string name);
 
 	// location execution functions.
 	void runCurrentTown();
@@ -43,6 +46,8 @@ public:
 	//void runForestPath();
 	//void runCity();
 	void runPastCity();
+	void runAlchemyShop();
+	void runCurrentCottage();
 
 	void flashback1();
 
@@ -55,6 +60,7 @@ public:
 	Cottage currentCottage, pastCottage;
 	ForestPath currentForestPath, pastForestPath;
 	City currentCity, pastCity;
+	AlchemyShop Alchemy;
 
 
 
@@ -63,7 +69,7 @@ public:
 	vector<string> mathiasInv;
 
 	// conditionals relevant to this chapter.
-	bool inCurrentRuins;
+	//bool inCurrentRuins;
 	vector<bool> checks;
 
 	// parser string for this chapter.

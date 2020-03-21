@@ -123,6 +123,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AlchemyShop.cpp" />
     <ClCompile Include="City.cpp" />
     <ClCompile Include="Cottage.cpp" />
     <ClCompile Include="em.cpp" />
@@ -138,6 +139,7 @@
     <ClInclude Include="Cottage.h" />
     <ClInclude Include="ForestPath.h" />
     <ClInclude Include="functions.h" />
+    <ClInclude Include="AlchemyShop.h" />
     <ClInclude Include="Icon.h" />
     <ClInclude Include="Ruins.h" />
   </ItemGroup>
