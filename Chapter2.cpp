@@ -348,8 +348,8 @@ void Chapter2::runCurrentTown() {
 
 				if (modified_I == "helpElder") {
 					function.Action("ClearDialog()", true);
-					function.Action("SetDialog(Great! Would you like to buy my apples or repair my lock? [selectAppleErrand | I can buy the apples.] [selectLockErrand | I would rather fix the lock.])", true);
-					//function.SetupDialogText("Great! Would you like to buy my apples or repair my lock?", "selectAppleErrand", "I can buy the apples.", "selectLockErrand", "I would rather fix the lock.");
+					//function.Action("SetDialog(Great! Would you like to buy my apples or repair my lock? [selectAppleErrand | I can buy the apples.] [selectLockErrand | I would rather fix the lock.])", true);
+					function.SetupDialogText("Great! Would you like to buy my apples or repair my lock?", "selectAppleErrand", "I can buy the apples.", "selectLockErrand", "I would rather fix the lock.");
 					visitedTownElder = true;
 				}
 

@@ -59,6 +59,6 @@ public:
 	void WalkToPlace(string character, string location);
 
 	//Dialog Text Setup
-	void SetupDialogText(string message, string responseKey1, string response1, string responseKey2, string response2, string responseKey3, string response3);
+	void SetupDialogText(string message, string responseKey1, string response1, string responseKey2 = "nothing", string response2 = "nothing", string responseKey3 = "nothing", string response3 = "nothing");
 
 };
