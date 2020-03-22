@@ -162,6 +162,9 @@ bool functions::checkCommonKeywords(string input, string modifiedInput, string p
 		else if (modifiedInput == "Quit") {
 			Action("Quit()", true);
 		}
+		else if (modifiedInput == "end") {
+			Action("HideDialog()", true);
+		}
 		else keywordFound = false;
 	}
 	//If it's under the "Key" keyword
@@ -184,7 +187,13 @@ bool functions::checkCommonKeywords(string input, string modifiedInput, string p
 
 	//If it's under the "Close" keyword
 	else if (modifiedInput == "Close") {
-		CloseList();
+		modifiedInput = splitInput(input, 0, true);
+		if (modifiedInput == "Narration") {
+			Action("HideNarration()", true);
+		}
+		else {
+			CloseList();
+		}
 	}
 	else keywordFound = false;
 

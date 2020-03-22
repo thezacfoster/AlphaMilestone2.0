@@ -37,7 +37,7 @@ public:
 
 	// location execution functions.
 	void runCurrentTown();
-	//void runBlacksmithFoundry();
+	void runBlacksmithFoundry();
 	void runCurrentForestPath();
 	void runCurrentRuins();
 	void runPastRuins();

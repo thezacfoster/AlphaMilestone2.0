@@ -5,7 +5,6 @@
 -- File Description: The execution related to Chapter 2.
 */
 #include "Chapter2.h"
-//#include "functions.cpp"
 #include <chrono>
 #include <thread>
 #include <vector>
@@ -13,7 +12,6 @@
 using namespace std;
 
 vector<string> playerInv;
-vector<string> mariahInv;
 
 bool inCurrentTown = true;
 bool inCurrentForestPath = false;
@@ -22,10 +20,18 @@ bool inPastCottage = true;
 bool inPastCity = false;
 bool inPastForestPath = false;
 bool inPastRuins = false;
+bool inBlacksmithFoundry = true;
 bool item_taken = false;
 bool item_placed = false;
 bool sword_taken = false;
 bool spellbook_taken = false;
+bool hasStorybook = true;
+bool hasBrokenLock = false;
+bool hasFixedLock = false;
+bool hasAppleMoney = false;
+bool hasElderApple = false;
+bool visitedFortuneteller = false;
+bool visitedTownElder = false;
 
 Chapter2::Chapter2() {
 	runSetup();
@@ -101,6 +107,7 @@ bool Chapter2::setupCurrentTown(string name) {
 	function.Action("CreateItem(Elder Apple, Apple)", true);
 	function.Action("CreateItem(Broken Lock, Lock)", true);
 	function.Action("CreateItem(Storybook, BlueBook)", true);
+	playerInv.push_back("Storybook");
 
 	//icons
 	//Talk To Town Elder
@@ -112,7 +119,8 @@ bool Chapter2::setupCurrentTown(string name) {
 	//Pick Up MathiasSword
 	currentCity.icons.push_back(Icon("Take_MathiasSword", "Hand", "MathiasSword", "Take the sword", "true"));
 	//Enter BlacksmithFoundry
-	currentCity.icons.push_back(Icon("Enter Blacksmith Foundry", "Hand", "CurrentCity.RedHouseDoor", "Enter Blacksmith Foundry", "true"));
+	currentCity.icons.push_back(Icon("Enter Blacksmith Foundry", "Hand", "CurrentTown.RedHouseDoor", "Enter Blacksmith Foundry", "true"));
+	function.SetupIcons(currentCity.icons);
 
 	return true;
 }
@@ -131,6 +139,7 @@ bool Chapter2::setupBlacksmithFoundry(string name) {
 	BlacksmithFoundry.icons.push_back(Icon("Talk To Blacksmith", "Talk", "Blacksmith", "Talk To Blacksmith", "true"));
 	//Exit Blacksmith Foundry
 	BlacksmithFoundry.icons.push_back(Icon("Exit Blacksmith Foundry", "Hand", "BlacksmithFoundry.Door", "Exit Blacksmith Foundry", "true"));
+	function.SetupIcons(BlacksmithFoundry.icons);
 
 	return true;
 }
@@ -252,14 +261,237 @@ void Chapter2::runCurrentTown() {
 			//If it's under the "Talk" keyword
 			if (modified_I == "Talk") {
 				modified_I = function.splitInput(i, 0, true);
+
+				//splitInput needs modifications to allow for spaces
+				if (modified_I == "Elder") {
+					function.Action("DisableInput()", true);
+					function.Action("WalkTo(Arlan, Town Elder)", true);
+					function.Action("ShowDialog()", true);
+					function.Action("ClearDialog()", true);
+					function.Action("SetLeft(Arlan)", true);
+					function.Action("SetRight(Town Elder)", true);
+					function.Action("EnableInput()", true);
+					if (hasStorybook && !hasBrokenLock && !hasFixedLock && !hasAppleMoney && !hasElderApple) {
+						function.Action("SetDialog(Thats a cool book Arlan! Can you please help me run some errands and ill tell you about one of the stories? [helpElder | Sounds like a deal.])", true);
+					}
+					else if (hasAppleMoney) {
+						function.Action("ClearDialog()", true);
+						function.Action("SetDialog(Please go buy me an apple from the Apple Merchant! [end | ok.])", true);
+					}
+					else if (hasBrokenLock) {
+						function.Action("ClearDialog()", true);
+						function.Action("SetDialog(Please go repair my lock at the Blacksmith Foundry! [end | ok.])", true);
+					}
+					else if (hasElderApple || hasFixedLock) {
+						if (visitedFortuneteller) {
+							if (hasElderApple) {
+								for (int i = 0; i < playerInv.size(); i++) {
+									if (playerInv[i] == "Storybook") {
+										playerInv.erase(playerInv.begin() + i);
+									}
+								}
+								hasStorybook = false;
+								for (int i = 0; i < playerInv.size(); i++) {
+									if (playerInv[i] == "Elder Apple") {
+										playerInv.erase(playerInv.begin() + i);
+									}
+								}
+								hasElderApple = false;
+							}
+							else if (hasFixedLock) {
+								for (int i = 0; i < playerInv.size(); i++) {
+									if (playerInv[i] == "Storybook") {
+										playerInv.erase(playerInv.begin() + i);
+									}
+								}
+								hasStorybook = false;
+								for (int i = 0; i < playerInv.size(); i++) {
+									if (playerInv[i] == "Fixed Lock") {
+										playerInv.erase(playerInv.begin() + i);
+									}
+								}
+								hasFixedLock = false;
+							}
+						}
+						else {
+							function.Action("ClearDialog()", true);
+							function.Action("SetDialog(Go get your fortune from the fortuneteller! [end | ok.])", true);
+						}
+					}
+				}
+
+				else if (modified_I == "Merchant") {
+					function.Action("DisableInput()", true);
+					function.Action("WalkTo(Arlan, Apple Merchant)", true);
+					function.Action("ShowDialog()", true);
+					function.Action("ClearDialog()", true);
+					function.Action("SetLeft(Arlan)", true);
+					function.Action("SetRight(Apple Merchant)", true);
+					function.Action("EnableInput()", true);
+					if (!visitedTownElder) {
+						function.Action("ClearDialog()", true);
+						function.Action("SetDialog(I am not open quite yet. Come back later! [end | ok.])", true);
+					}
+					else if (hasAppleMoney) {
+						function.Action("ClearDialog()", true);
+						function.Action("SetDialog(Ah! Take this apple for the coin! [takeApple | ok!])", true);
+					}
+					else {
+						function.Action("ClearDialog()", true);
+						function.Action("SetDialog(Beautiful day isn't it?! [end | It is!])", true);
+					}
+				}
+			}
+
+			else if (modified_I == "Selected") {
+				modified_I = function.splitInput(i, 0, true);
+
+				if (modified_I == "helpElder") {
+					function.Action("ClearDialog()", true);
+					function.Action("SetDialog(Great! Would you like to buy my apples or repair my lock? [selectAppleErrand | I can buy the apples.] [selectLockErrand | I would rather fix the lock.])", true);
+					//function.SetupDialogText("Great! Would you like to buy my apples or repair my lock?", "selectAppleErrand", "I can buy the apples.", "selectLockErrand", "I would rather fix the lock.");
+					visitedTownElder = true;
+				}
+
+				else if (modified_I == "selectAppleErrand") {
+					function.Action("SetNarration(Apple Money Added To Inventory)", true);
+					function.Action("ShowNarration()", true);
+					playerInv.push_back("Apple Money");
+					hasAppleMoney = true;
+					function.Action("ClearDialog()", true);
+					function.Action("SetDialog(I would recommend getting your fortune told by the new fortune teller as well! Meet me back here after your errands are done! [end | ok!])", true);
+				}
+
+				else if (modified_I == "selectLockErrand") {
+					function.Action("SetNarration(Broken Lock Added To Inventory)", true);
+					function.Action("ShowNarration()", true);
+					playerInv.push_back("Broken Lock");
+					hasBrokenLock = true;
+					function.Action("ClearDialog()", true);
+					function.Action("SetDialog(I would recommend getting your fortune told by the new fortune teller as well! Meet me back here after your errands are done! [end | ok!])", true);
+				}
+
+				else if (modified_I == "takeApple") {
+					function.Action("SetNarration(Apple Money Removed From Inventory)", true);
+					function.Action("ShowNarration()", true);
+					for (int i = 0; i < playerInv.size(); i++) {
+						if (playerInv[i] == "Apple Money") {
+							playerInv.erase(playerInv.begin() + i);
+						}
+					}
+					hasAppleMoney = false;
+					function.Action("ClearDialog()", true);
+					function.Action("SetDialog(Here you go! [receiveApple | Thanks!])", true);
+				}
+
+				else if (modified_I == "receiveApple") {
+					function.Action("HideDialog()", true);
+					playerInv.push_back("Elder Apple");
+					hasElderApple = true;
+					function.Action("SetNarration(Elder Apple Added To Inventory)", true);
+					function.Action("ShowNarration()", true);
+				}
 			}
 		}
 
-		if (i == "input arrived Arlan position CurrentTown.EastEnd") {
-			function.Transition("Arlan", "CurrentTown.EastEnd", "CurrentForestPath.WestEnd");
-			inCurrentTown = false;
-			inCurrentForestPath = true;
-			runCurrentForestPath();
+		if (i == "input Enter Blacksmith Foundry CurrentTown.RedHouseDoor") {
+			function.WalkToPlace("Arlan", "CurrentTown.RedHouseDoor");
+			if (visitedTownElder) {
+				function.Transition("Arlan", "CurrentTown.RedHouseDoor", "BlacksmithFoundry.Door");
+				inCurrentTown = false;
+				inBlacksmithFoundry = true;
+				runBlacksmithFoundry();
+			}
+			else {
+				function.Action("SetNarration(The door is locked. This store must be closed.)", true);
+				function.Action("ShowNarration()", true);
+			}
+		}
+
+		else if (i == "input Key Inventory") {
+			function.Action("ClearList()", true);
+			for (string item : playerInv) {
+				function.Action("AddToList(" + item + ")", true);
+			}
+			function.Action("ShowList(Arlan)", true);
+		}
+
+		else if (i == "input Close List") {
+			function.Action("HideList()", true);
+			function.Action("EnableInput()", true);
+		}
+	}
+}
+
+void Chapter2::runBlacksmithFoundry() {
+	while (inBlacksmithFoundry) {
+		string i;
+		getline(cin, i);
+
+		//Gets the first word that isn't "input"
+		modified_I = function.splitInput(i, 6, false);
+
+		bool inputWasCommon = function.checkCommonKeywords(i, modified_I, "Arlan", arlanInv);
+
+		if (!inputWasCommon) {
+			//If it's under the "Talk" keyword
+			if (modified_I == "Talk") {
+				modified_I = function.splitInput(i, 0, true);
+
+				if (modified_I == "Blacksmith") {
+					function.Action("DisableInput()", true);
+					function.Action("WalkTo(Arlan, Blacksmith)", true);
+					function.Action("ShowDialog()", true);
+					function.Action("ClearDialog()", true);
+					function.Action("SetLeft(Arlan)", true);
+					function.Action("SetRight(Blacksmith)", true);
+					function.Action("EnableInput()", true);
+					if (hasBrokenLock) {
+						function.Action("ClearDialog()", true);
+						function.Action("SetDialog(Oh! The Town Elder needs his broken lock fixed? No problem! [fixTheLock | Thank you!])", true);
+					}
+					else if (hasFixedLock) {
+						function.Action("ClearDialog()", true);
+						function.Action("SetDialog(Return that lock to the Town Elder! [end | ok.])", true);
+					}
+					else {
+						function.Action("ClearDialog()", true);
+						function.Action("SetDialog(Hello. Hope you are having a good day! [end | Thank you!])", true);
+					}
+				}
+			}
+
+			else if (modified_I == "Selected") {
+				modified_I = function.splitInput(i, 0, true);
+
+				if (modified_I == "fixTheLock") {
+					function.Action("SetNarration(Broken Lock Removed From Inventory)", true);
+					function.Action("ShowNarration()", true);
+					for (int i = 0; i < playerInv.size(); i++) {
+						if (playerInv[i] == "Broken Lock") {
+							playerInv.erase(playerInv.begin() + i);
+						}
+					}
+					hasBrokenLock = false;
+					function.Action("ClearDialog()", true);
+					function.Action("SetDialog(Here you go! [receiveFixedLock | Thanks!])", true);
+				}
+
+				else if (modified_I == "receiveFixedLock") {
+					function.Action("HideDialog()", true);
+					playerInv.push_back("Fixed Lock");
+					hasFixedLock = true;
+					function.Action("SetNarration(Fixed Lock Added To Inventory)", true);
+					function.Action("ShowNarration()", true);
+				}
+			}
+		}
+
+		if (i == "input Exit Blacksmith Foundry BlacksmithFoundry.Door") {
+			function.Transition("Arlan", "BlacksmithFoundry.Door", "CurrentTown.RedHouseDoor");
+			inBlacksmithFoundry = false;
+			inCurrentTown = true;
+			runCurrentTown();
 		}
 
 		else if (i == "input Key Inventory") {
@@ -306,66 +538,6 @@ void Chapter2::runCurrentForestPath() {
 			inCurrentForestPath = false;
 			inCurrentRuins = true;
 			runCurrentRuins();
-		}
-
-		else if (i == "input Take_MathiasSword MathiasSword") {
-			function.Action("RemoveFromList(MathiasSword)", true);
-			for (int i = 0; i < mariahInv.size(); i++) {
-				if (mariahInv[i] == "MathiasSword") {
-					mariahInv.erase(mariahInv.begin() + i);
-				}
-			}
-			function.Action("DisableIcon(Take_MathiasSword, MathiasSword)", true);
-			playerInv.push_back("MathiasSword");
-			function.Action("HideList()", true);
-			item_taken = true;
-			sword_taken = true;
-			function.Action("CreateEffect(Mariah, Brew)", true);
-			function.Action("EnableEffect(Mariah, Brew)", true);
-			this_thread::sleep_for(chrono::milliseconds(2000));
-			function.Action("DisableEffect(Mariah)", true);
-			function.Action("SetPosition(Mariah)", true);
-		}
-
-		else if (i == "input Take_ArchieSpellbook ArchieSpellbook") {
-			function.Action("RemoveFromList(ArchieSpellbook)", true);
-			for (int i = 0; i < mariahInv.size(); i++) {
-				if (mariahInv[i] == "ArchieSpellbook") {
-					mariahInv.erase(mariahInv.begin() + i);
-				}
-			}
-			function.Action("DisableIcon(Take_ArchieSpellbook, ArchieSpellbook)", true);
-			playerInv.push_back("ArchieSpellbook");
-			function.Action("HideList()", true);
-			item_taken = true;
-			spellbook_taken = true;
-			function.Action("CreateEffect(Mariah, Brew)", true);
-			function.Action("EnableEffect(Mariah, Brew)", true);
-			this_thread::sleep_for(chrono::milliseconds(2000));
-			function.Action("DisableEffect(Mariah)", true);
-			function.Action("SetPosition(Mariah)", true);
-		}
-
-		else if (i == "input Talk_To_Mariah Mariah") {
-			function.Action("DisableInput()", true);
-			function.Action("WalkTo(Arlan, Mariah)", true);
-			function.Action("ShowDialog()", true);
-			function.Action("ClearDialog()", true);
-			function.Action("SetLeft(Arlan)", true);
-			function.Action("SetRight(Mariah)", true);
-			function.Action("EnableInput()", true);
-			if (item_taken)
-				function.Action("SetDialog(Have a good day! [end|Thanks you too.])", true);
-			else
-				function.Action("SetDialog(The ruins are a mysterious place. May I offer you a gift for your journey? [takeFromMariah|Yes please] [end|No Thanks])", true);
-		}
-
-		else if (i == "input Selected takeFromMariah") {
-			function.Action("HideDialog()", true);
-			for (string item : mariahInv) {
-				function.Action("AddToList(" + item + ")", true);
-			}
-			function.Action("ShowList(Mariah)", true);
 		}
 
 		else if (i == "input Selected end") {
