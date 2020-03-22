@@ -264,23 +264,15 @@ void Chapter2::runCurrentTown() {
 
 				//splitInput needs modifications to allow for spaces
 				if (modified_I == "Elder") {
-					function.Action("DisableInput()", true);
-					function.Action("WalkTo(Arlan, Town Elder)", true);
-					function.Action("ShowDialog()", true);
-					function.Action("ClearDialog()", true);
-					function.Action("SetLeft(Arlan)", true);
-					function.Action("SetRight(Town Elder)", true);
-					function.Action("EnableInput()", true);
+					function.SetupDialog("Arlan", "Town Elder", true);
 					if (hasStorybook && !hasBrokenLock && !hasFixedLock && !hasAppleMoney && !hasElderApple) {
-						function.Action("SetDialog(Thats a cool book Arlan! Can you please help me run some errands and ill tell you about one of the stories? [helpElder | Sounds like a deal.])", true);
+						function.SetupDialogText("Thats a cool book Arlan! Can you please help me run some errands and ill tell you about one of the stories?", "helpElder", "Sounds like a deal.");
 					}
 					else if (hasAppleMoney) {
-						function.Action("ClearDialog()", true);
-						function.Action("SetDialog(Please go buy me an apple from the Apple Merchant! [end | ok.])", true);
+						function.SetupDialogText("Please go buy me an apple from the Apple Merchant!", "end", "ok.");
 					}
 					else if (hasBrokenLock) {
-						function.Action("ClearDialog()", true);
-						function.Action("SetDialog(Please go repair my lock at the Blacksmith Foundry! [end | ok.])", true);
+						function.SetupDialogText("Please go repair my lock at the Blacksmith Foundry!", "end", "ok.");
 					}
 					else if (hasElderApple || hasFixedLock) {
 						if (visitedFortuneteller) {
@@ -314,31 +306,21 @@ void Chapter2::runCurrentTown() {
 							}
 						}
 						else {
-							function.Action("ClearDialog()", true);
-							function.Action("SetDialog(Go get your fortune from the fortuneteller! [end | ok.])", true);
+							function.SetupDialogText("Go get your fortune from the fortuneteller!", "end", "ok.");
 						}
 					}
 				}
 
 				else if (modified_I == "Merchant") {
-					function.Action("DisableInput()", true);
-					function.Action("WalkTo(Arlan, Apple Merchant)", true);
-					function.Action("ShowDialog()", true);
-					function.Action("ClearDialog()", true);
-					function.Action("SetLeft(Arlan)", true);
-					function.Action("SetRight(Apple Merchant)", true);
-					function.Action("EnableInput()", true);
+					function.SetupDialog("Arlan", "Apple Merchant", true);
 					if (!visitedTownElder) {
-						function.Action("ClearDialog()", true);
-						function.Action("SetDialog(I am not open quite yet. Come back later! [end | ok.])", true);
+						function.SetupDialogText("I am not open quite yet. Come back later!", "end", "ok");
 					}
 					else if (hasAppleMoney) {
-						function.Action("ClearDialog()", true);
-						function.Action("SetDialog(Ah! Take this apple for the coin! [takeApple | ok!])", true);
+						function.SetupDialogText("Ah! Take this apple for the coin!", "takeApple", "ok!");
 					}
 					else {
-						function.Action("ClearDialog()", true);
-						function.Action("SetDialog(Beautiful day isn't it?! [end | It is!])", true);
+						function.SetupDialogText("Beautiful day isn't it?!", "end", "It is!");
 					}
 				}
 			}
@@ -347,8 +329,6 @@ void Chapter2::runCurrentTown() {
 				modified_I = function.splitInput(i, 0, true);
 
 				if (modified_I == "helpElder") {
-					function.Action("ClearDialog()", true);
-					//function.Action("SetDialog(Great! Would you like to buy my apples or repair my lock? [selectAppleErrand | I can buy the apples.] [selectLockErrand | I would rather fix the lock.])", true);
 					function.SetupDialogText("Great! Would you like to buy my apples or repair my lock?", "selectAppleErrand", "I can buy the apples.", "selectLockErrand", "I would rather fix the lock.");
 					visitedTownElder = true;
 				}
@@ -358,8 +338,7 @@ void Chapter2::runCurrentTown() {
 					function.Action("ShowNarration()", true);
 					playerInv.push_back("Apple Money");
 					hasAppleMoney = true;
-					function.Action("ClearDialog()", true);
-					function.Action("SetDialog(I would recommend getting your fortune told by the new fortune teller as well! Meet me back here after your errands are done! [end | ok!])", true);
+					function.SetupDialogText("I would recommend getting your fortune told by the new fortune teller as well! Meet me back here after your errands are done!", "end", "ok!");
 				}
 
 				else if (modified_I == "selectLockErrand") {
@@ -367,8 +346,7 @@ void Chapter2::runCurrentTown() {
 					function.Action("ShowNarration()", true);
 					playerInv.push_back("Broken Lock");
 					hasBrokenLock = true;
-					function.Action("ClearDialog()", true);
-					function.Action("SetDialog(I would recommend getting your fortune told by the new fortune teller as well! Meet me back here after your errands are done! [end | ok!])", true);
+					function.SetupDialogText("I would recommend getting your fortune told by the new fortune teller as well! Meet me back here after your errands are done!", "end", "ok!");
 				}
 
 				else if (modified_I == "takeApple") {
@@ -380,8 +358,7 @@ void Chapter2::runCurrentTown() {
 						}
 					}
 					hasAppleMoney = false;
-					function.Action("ClearDialog()", true);
-					function.Action("SetDialog(Here you go! [receiveApple | Thanks!])", true);
+					function.SetupDialogText("Here you go!", "receiveApple", "Thanks!");
 				}
 
 				else if (modified_I == "receiveApple") {
@@ -439,24 +416,15 @@ void Chapter2::runBlacksmithFoundry() {
 				modified_I = function.splitInput(i, 0, true);
 
 				if (modified_I == "Blacksmith") {
-					function.Action("DisableInput()", true);
-					function.Action("WalkTo(Arlan, Blacksmith)", true);
-					function.Action("ShowDialog()", true);
-					function.Action("ClearDialog()", true);
-					function.Action("SetLeft(Arlan)", true);
-					function.Action("SetRight(Blacksmith)", true);
-					function.Action("EnableInput()", true);
+					function.SetupDialog("Arlan", "Blacksmith", true);
 					if (hasBrokenLock) {
-						function.Action("ClearDialog()", true);
-						function.Action("SetDialog(Oh! The Town Elder needs his broken lock fixed? No problem! [fixTheLock | Thank you!])", true);
+						function.SetupDialogText("Oh! The Town Elder needs his broken lock fixed? No problem! Give me the lock.", "fixTheLock", "Here you go!");
 					}
 					else if (hasFixedLock) {
-						function.Action("ClearDialog()", true);
-						function.Action("SetDialog(Return that lock to the Town Elder! [end | ok.])", true);
+						function.SetupDialogText("Return that lock to the Town Elder", "end", "ok.");
 					}
 					else {
-						function.Action("ClearDialog()", true);
-						function.Action("SetDialog(Hello. Hope you are having a good day! [end | Thank you!])", true);
+						function.SetupDialogText("Hello. Hope you are having a good day!", "end", "Thank you!");
 					}
 				}
 			}
@@ -473,8 +441,7 @@ void Chapter2::runBlacksmithFoundry() {
 						}
 					}
 					hasBrokenLock = false;
-					function.Action("ClearDialog()", true);
-					function.Action("SetDialog(Here you go! [receiveFixedLock | Thanks!])", true);
+					function.SetupDialogText("Here you go!", "receiveFixedLock", "Thanks!");
 				}
 
 				else if (modified_I == "receiveFixedLock") {
