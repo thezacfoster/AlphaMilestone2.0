@@ -28,7 +28,7 @@ public:
 	bool setupBlacksmithFoundry(string name);
 	bool setupCurrentForestPath(string name);
 	bool setupCurrentRuins(string name);
-	bool setupPastRuins(string name);
+	bool setupPastRuins(string name, bool Enemy);
 	bool setupPastCottage(string name);
 	//bool setupForestPath(string name);
 	bool setupPastForestPath(string name);
@@ -40,12 +40,12 @@ public:
 	void runBlacksmithFoundry();
 	void runCurrentForestPath();
 	void runCurrentRuins();
-	void runPastRuins();
-	void runPastForestPath();
-	void runPastCottage();
+	void runPastRuins(bool CharacterCheck);
+	void runPastForestPath(bool CharacterCheck);
+	void runPastCottage(bool CharacterCheck);
 	//void runForestPath();
 	//void runCity();
-	void runPastCity();
+	void runPastCity(bool CharacterCheck);
 
 	void flashback1();
 
@@ -65,6 +65,7 @@ public:
 	// character inventories for this chapter (to be moved to a universal story class)
 	vector<string> arlanInv;
 	vector<string> mathiasInv;
+	vector<string> archieInv;
 
 	// conditionals relevant to this chapter.
 	bool inCurrentRuins;

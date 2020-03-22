@@ -50,7 +50,6 @@ bool Chapter2::runSetup() { // runs initial setup for chapter 2. returns true if
 	setupPastCottage("PastCottage");
 	setupPastForestPath("PastForestPath");
 	setupPastCity("PastCity");
-	setupPastRuins("PastRuins");
 
 	return true;
 }
@@ -61,7 +60,7 @@ void Chapter2::run() { // begins chapter 2's execution
 	//runCurrentForestPath();
 	//runCurrentRuins();
 	//setupPastRuins("PastRuins");
-	//runPastCottage();
+	//runPastCottage(false);
 	//setupPastForestPath("PastForestPath");
 }
 
@@ -88,7 +87,7 @@ void Chapter2::flashback1() {
 	function.Action("SetCameraMode(Follow)", true);
 	function.Action("Die(Arlan)", true);
 	function.Action("FadeOut()", true);
-	runPastCottage();
+	runPastCottage(sword_taken);
 	//
 }
 
@@ -187,7 +186,7 @@ bool Chapter2::setupPastCottage(string name) {
 	function.Action("SetPosition(Letter, PastCottage.Shelf)", true);
 
 	//character setup
-	function.SetupCharacter("Mathias", "F", "LightArmour", "Long", "Black", "PastCottage.Bed");
+	//function.SetupCharacter("Mathias", "F", "LightArmour", "Long", "Black", "PastCottage.Bed");
 
 	//icons
 	pastCottage.icons.push_back(Icon("Open", "Exit", "PastCottage.Door", "Leave the Room", "true"));
@@ -226,21 +225,33 @@ bool Chapter2::setupPastCity(string name) {
 	return true;
 }
 
-bool Chapter2::setupPastRuins(string name) {
+bool Chapter2::setupPastRuins(string name, bool Enemy) {
 	pastRuins = Ruins(name);
 
+	string EnemyName = "";
+
+	if (Enemy) {
+		function.SetupCharacter("Archie", "D", "Priest", "Mage_Full", "Black", name + ".Altar");
+		pastRuins.icons.push_back(Icon("Talk to Archie", "Talk", "Archie", "Talk to Archie", "true"));
+		EnemyName = "Archie";
+	}
+	else {
+		function.SetupCharacter("Mathias", "F", "HeavyArmour", "Short_Full", "Brown", name + ".Altar");
+		pastRuins.icons.push_back(Icon("Talk to Mathias", "Talk", "Mathias", "Talk to Mathias", "true"));
+		EnemyName = "Mathias";
+	}
 	//character setup
 	//function.SetupCharacter("Mathias", "F", "LightArmour", "Long", "Brown", "PastCity.WestEnd");
-	function.SetupCharacter("Archie", "D", "Priest", "Mage_Full", "Black", name + ".Altar");
+	//function.SetupCharacter("Archie", "D", "Priest", "Mage_Full", "Black", name + ".Altar");
 
 	//icons
-	pastRuins.icons.push_back(Icon("Talk to Archie", "Talk", "Archie", "Talk to Archie", "true"));
+	//pastRuins.icons.push_back(Icon("Talk to Archie", "Talk", "Archie", "Talk to Archie", "true"));
 	function.SetupIcons(pastRuins.icons);
 
 	function.Action("CreateItem(MysteriousSkull, Skull)", true);
 	function.Action("SetPosition(MysteriousSkull, " + name + ".Altar)", true);
-	function.Action("Face(Archie, MysteriousSkull)", true);
-	function.Action("Kneel(Archie)", true);
+	function.Action("Face(" + EnemyName + ", MysteriousSkull)", true);
+	function.Action("Kneel(" + EnemyName + ")", true);
 	//function.Action("ShowMenu()", true);
 
 	return true;
@@ -617,10 +628,23 @@ void Chapter2::runCurrentRuins() {
 	}
 }
 
-void Chapter2::runPastCottage() {
+//Chractercheck is sword_taken
+void Chapter2::runPastCottage(bool CharacterCheck) {
 	bool LetterCheck = false;
+	bool inputWasCommon;
+	string CharacterName = "";
+	setupPastRuins("PastRuins", CharacterCheck);
 
-	function.Action("SetCameraFocus(Mathias)", true);
+	if (CharacterCheck) {
+		function.SetupCharacter("Mathias", "F", "LightArmour", "Long", "Black", "PastCottage.Bed");
+		CharacterName = "Mathias";
+	}
+	else {
+		function.SetupCharacter("Archie", "D", "Warlock", "Mage_Full", "Red", "PastCottage.Bed");
+		CharacterName = "Archie";
+	}
+
+	function.Action("SetCameraFocus(" + CharacterName + ")", true);
 	function.Action("FadeIn()", true);
 	function.Action("EnableInput()", true);
 	while (inPastCottage) {
@@ -630,11 +654,17 @@ void Chapter2::runPastCottage() {
 		//Gets the first word that isn't "input"
 		modified_I = function.splitInput(i, 6, false);
 
-		bool inputWasCommon = function.checkCommonKeywords(i, modified_I, "Mathias", mathiasInv);
+		if (CharacterCheck) {
+			inputWasCommon = function.checkCommonKeywords(i, modified_I, CharacterName, mathiasInv);
+		}
+		else {
+			inputWasCommon = function.checkCommonKeywords(i, modified_I, CharacterName, archieInv);
+		}
+		
 
 		if (modified_I == "Read") {
-			function.Action("WalkTo(Mathias, Letter)", true);
-			function.Action("SetNarration(Mathias we need to discuss what to do about that artifact we found. Meet me by the ruins so we can discuss)", true);
+			function.Action("WalkTo(" + CharacterName + ", Letter)", true);
+			function.Action("SetNarration(" + CharacterName + " we need to discuss what to do about that artifact we found. Meet me by the ruins so we can discuss)", true);
 			function.Action("ShowNarration()", true);
 			LetterCheck = true;
 
@@ -653,10 +683,10 @@ void Chapter2::runPastCottage() {
 
 			if (modified_I == "Open") {
 				if (LetterCheck) {
-					function.Transition("Mathias", "PastCottage.Door", "PastCity.GreenHouseDoor");
+					function.Transition(CharacterName, "PastCottage.Door", "PastCity.GreenHouseDoor");
 					inPastCottage = false;
 					inPastCity = true;
-					runPastCity();
+					runPastCity(CharacterCheck);
 				}
 				else {
 					function.Action("SetNarration(I should read that letter I left on the shelf)", true);
@@ -668,8 +698,19 @@ void Chapter2::runPastCottage() {
 
 	}
 }
-void Chapter2::runPastForestPath() {
+void Chapter2::runPastForestPath(bool CharacterCheck) {
 	//function.Action("Enter(" + character + ", " + entrance + ", true)", true);
+
+	bool inputWasCommon;
+	string CharacterName = "";
+
+	if (CharacterCheck) {
+		CharacterName = "Mathias";
+	}
+	else {
+		CharacterName = "Archie";
+	}
+
 	while (inPastForestPath) {
 		string i;
 		getline(cin, i);
@@ -677,7 +718,12 @@ void Chapter2::runPastForestPath() {
 		//Gets the first word that isn't "input"
 		modified_I = function.splitInput(i, 6, false);
 
-		bool inputWasCommon = function.checkCommonKeywords(i, modified_I, "Mathias", mathiasInv);
+		if (CharacterCheck) {
+			inputWasCommon = function.checkCommonKeywords(i, modified_I, CharacterName, mathiasInv);
+		}
+		else {
+			inputWasCommon = function.checkCommonKeywords(i, modified_I, CharacterName, archieInv);
+		}
 
 		if (!inputWasCommon) {
 			//If it's under the "Talk" keyword
@@ -686,23 +732,34 @@ void Chapter2::runPastForestPath() {
 			}
 		}
 
-		if (i == "input arrived Mathias position PastForestPath.WestEnd") {
-			function.Transition("Mathias", "PastForestPath.WestEnd", "PastCity.EastEnd");
+		if (i == "input arrived " + CharacterName + " position PastForestPath.WestEnd") {
+			function.Transition(CharacterName, "PastForestPath.WestEnd", "PastCity.EastEnd");
 			inPastCity = true;
 			inPastForestPath = false;
-			runPastCity();
+			runPastCity(CharacterCheck);
 		}
 
-		else if (i == "input arrived Mathias position PastForestPath.EastEnd") {
-			function.Transition("Mathias", "PastForestPath.EastEnd", "PastRuins.Exit");
+		else if (i == "input arrived " + CharacterName +" position PastForestPath.EastEnd") {
+			function.Transition(CharacterName, "PastForestPath.EastEnd", "PastRuins.Exit");
 			inPastForestPath = false;
 			inPastRuins = true;
-			runPastRuins();
+			runPastRuins(CharacterCheck);
 		}
 	}
 }
 
-void Chapter2::runPastCity() {
+void Chapter2::runPastCity(bool CharacterCheck) {
+
+	string CharacterName = "";
+	bool inputWasCommon;
+
+	if (CharacterCheck) {
+		CharacterName = "Mathias";
+	}
+	else {
+		CharacterName = "Archie";
+	}
+
 	while (inPastCity) {
 		string i;
 		getline(cin, i);
@@ -710,7 +767,12 @@ void Chapter2::runPastCity() {
 		//Gets the first word that isn't "input"
 		modified_I = function.splitInput(i, 6, false);
 
-		bool inputWasCommon = function.checkCommonKeywords(i, modified_I, "Mathias", mathiasInv);
+		if (CharacterCheck) {
+			inputWasCommon = function.checkCommonKeywords(i, modified_I, CharacterName, mathiasInv);
+		}
+		else {
+			inputWasCommon = function.checkCommonKeywords(i, modified_I, CharacterName, archieInv);
+		}
 
 		if (!inputWasCommon) {
 			//If it's under the "Talk" keyword
@@ -719,25 +781,39 @@ void Chapter2::runPastCity() {
 			}
 		}
 
-		if (i == "input arrived Mathias position PastCity.EastEnd") {
-			function.Transition("Mathias", "PastCity.EastEnd", "PastForestPath.WestEnd");
+		if (i == "input arrived " + CharacterName + " position PastCity.EastEnd") {
+			function.Transition(CharacterName, "PastCity.EastEnd", "PastForestPath.WestEnd");
 			inPastCity = false;
 			inPastForestPath = true;
-			runPastForestPath();
+			runPastForestPath(CharacterCheck);
 		}
 
 		if (modified_I == "Open") {
-			function.Transition("Mathias", "PastCity.GreenHouseDoor", "PastCottage.Door");
+			function.Transition(CharacterName, "PastCity.GreenHouseDoor", "PastCottage.Door");
 			inPastCottage = true;
 			inPastCity = false;
-			runPastCity();
+			runPastCity(CharacterCheck);
 		}
 
 	}
 }
 
-void Chapter2::runPastRuins() {
+void Chapter2::runPastRuins(bool CharacterCheck) {
 	//function.Action("Enter(" + character + ", " + entrance + ", true)", true);
+
+	string CharacterName = "";
+	string Enemy = "";
+	bool inputWasCommon;
+
+	if (CharacterCheck) {
+		CharacterName = "Mathias";
+		Enemy = "Archie";
+	}
+	else {
+		CharacterName = "Archie";
+		Enemy = "Mathias";
+	}
+
 	while (true) {
 		string i;
 		getline(cin, i);
@@ -745,15 +821,20 @@ void Chapter2::runPastRuins() {
 		//Gets the first word that isn't "input"
 		modified_I = function.splitInput(i, 6, false);
 
-		bool inputWasCommon = function.checkCommonKeywords(i, modified_I, "Mathias", mathiasInv);
+		if (CharacterCheck) {
+			inputWasCommon = function.checkCommonKeywords(i, modified_I, CharacterName, mathiasInv);
+		}
+		else {
+			inputWasCommon = function.checkCommonKeywords(i, modified_I, CharacterName, archieInv);
+		}
 
 		if (!inputWasCommon) {
 			//If it's under the "Talk" keyword
 			if (modified_I == "Talk") {
 				modified_I = function.splitInput(i, 0, true);
 
-				if (modified_I == "Archie") {
-					function.SetupDialog("Mathias", "Archie", false);
+				if (modified_I == Enemy) {
+					function.SetupDialog(CharacterName, Enemy, false);
 					function.Action("SetDialog(\"(He appears to be mumbling to himself) [getAttention|(Get his attention)]\")", false);
 				}
 			}
@@ -763,29 +844,29 @@ void Chapter2::runPastRuins() {
 
 				if (modified_I == "getAttention") {
 					function.Action("ClearDialog()", true);
-					function.Action("SetDialog(\"Ah, Mathias... you've arrived. I suppose this is inevitable. [question|What are you talking about?]\")", false);
+					function.Action("SetDialog(\"Ah, " + CharacterName + "... you've arrived. I suppose this is inevitable. [question|What are you talking about?]\")", false);
 				}
 
 				if (modified_I == "question") {
 					function.Action("ClearDialog()", true);
-					function.Action("SetDialog(\"I'm afraid this relic is more powerful than either of us could ever have imagined. I cannot let it fall into another's hands. I am sorry, old friend. [wait|Archie, wait-]\")", false);
+					function.Action("SetDialog(\"I'm afraid this relic is more powerful than either of us could ever have imagined. I cannot let it fall into another's hands. I am sorry, old friend. [wait|" + Enemy + ", wait-]\")", false);
 				}
 
 				if (modified_I == "wait") {
 					function.Action("ClearDialog()", true);
 					function.Action("HideDialog()", true);
 					function.Action("DisableInput()", true);
-					function.Action("WalkTo(Archie, PastRuins.Altar)", true);
-					function.Action("Face(Archie, Mathias)", true);
-					function.Action("Cast(Archie, Mathias)", true);
-					function.Action("Kneel(Mathias)", false);
+					function.Action("WalkTo(" + Enemy + ", PastRuins.Altar)", true);
+					function.Action("Face(" + Enemy + ", " + CharacterName + ")", true);
+					function.Action("Cast(" + Enemy + ", " + CharacterName + ")", true); //This works for now, but will need to change Mathias to a sword
+					function.Action("Kneel(" + CharacterName + ")", false);
 					//function.Action("Take(Archie, MysteriousSkull, PastRuins.Altar)", true);
-					function.Action("Face(Archie, MysteriousSkull)", true);
+					function.Action("Face(" + Enemy + ", MysteriousSkull)", true);
 					function.Action("SetPosition(MysteriousSkull)", true);
-					function.Action("Unpocket(Archie, MysteriousSkull)", true);
-					function.Action("WalkTo(Archie, PastRuins.Exit)", true);
-					function.Action("SetPosition(Archie)", true);
-					function.Action("WalkTo(Mathias, PastRuins.Altar)", true);
+					function.Action("Unpocket(" + Enemy + ", MysteriousSkull)", true);
+					function.Action("WalkTo(" + Enemy + ", PastRuins.Exit)", true);
+					function.Action("SetPosition(" + Enemy + ")", true);
+					function.Action("WalkTo(" + CharacterName + ", PastRuins.Altar)", true);
 					function.Action("FadeOut()", true);
 
 					function.Action("SetPosition(Arlan, CurrentRuins.Altar)", true);
