@@ -14,19 +14,18 @@ using namespace std;
 vector<string> playerInv;
 
 //location booleans
-bool inCurrentTown = true;
+bool inCurrentTown = false;
 bool inCurrentForestPath = false;
 bool inCurrentRuins = false;
 bool inPastCottage = true;
 bool inPastCity = false;
 bool inPastForestPath = false;
 bool inPastRuins = false;
-bool inBlacksmithFoundry = true;
+bool inBlacksmithFoundry = false;
 bool inAlchemyShop = false;
 bool inCurrentCottage = true;
 
 //event booleans
-bool item_taken = false;
 bool item_placed = false;
 bool sword_taken = false;
 bool spellbook_taken = false;
@@ -271,7 +270,7 @@ bool Chapter2::setupPastRuins(string name, bool Enemy) {
 	string EnemyName = "";
 
 	if (Enemy) {
-		function.SetupCharacter("Archie", "D", "Priest", "Mage_Full", "Black", name + ".Altar");
+		function.SetupCharacter("Archie", "D", "Warlock", "Mage_Full", "Red", name + ".Altar");
 		pastRuins.icons.push_back(Icon("Talk to Archie", "Talk", "Archie", "Talk to Archie", "true"));
 		EnemyName = "Archie";
 	}
@@ -424,7 +423,7 @@ void Chapter2::runCurrentTown() {
 							function.SetupDialogText("Go get your fortune from the fortuneteller!", "end", "ok.");
 						}
 					}
-					else if (completedErrand = true) {
+					else if (completedErrand == true) {
 						function.SetupDialogText("You should look around for an ancient artifact and take it to the ruins past the forest path.", "end", "Okay! Thanks!");
 					}
 				}
@@ -524,11 +523,7 @@ void Chapter2::runCurrentTown() {
 				function.Action("ShowNarration()", true);
 			}*/
 
-			else if (modified_I == "Look Inside Barrel CurrentTown.Barrel") {
-				function.Action("SetNarration(Theres a sword inside! You take it. It appears ancient and powerful. You wonder if this is the relic the elder mentioned.)", true);
-				function.Action("ShowNarration()", true);
-				playerInv.push_back("MathiasSword");
-			}
+			//Look Inside Barrel CurrentTown.Barrel
 		}
 
 		if (i == "input arrived Arlan position CurrentTown.EastEnd") {
@@ -556,6 +551,14 @@ void Chapter2::runCurrentTown() {
 				function.Action("SetNarration(The door is locked. This store must be closed.)", true);
 				function.Action("ShowNarration()", true);
 			}
+		}
+		
+		else if (i == "input Look Inside Barrel CurrentTown.Barrel") {
+			function.WalkToPlace("Arlan", "CurrentTown.Barrel");
+			function.Action("SetNarration(Theres a sword inside! You take it. It appears ancient and powerful. You wonder if this is the relic the elder mentioned.)", true);
+			function.Action("ShowNarration()", true);
+			playerInv.push_back("MathiasSword");
+			sword_taken = true;
 		}
 
 		else if (i == "input Key Inventory") {
@@ -748,9 +751,11 @@ void Chapter2::runCurrentForestPath() {
 		}
 
 		else if (i == "input Look Inside Dirt Pile CurrentForestPath.DirtPile") {
+			function.WalkToPlace("Arlan", "CurrentForestPath.DirtPile");
 			function.Action("SetNarration(There's a book inside! You take it. It appears ancient and unintelligable. And dirty. You wonder if this is the relic the elder mentioned.)", true);
 			function.Action("ShowNarration()", true);
 			playerInv.push_back("ArchieSpellbook");
+			spellbook_taken = true;
 		}
 	}
 }
@@ -787,7 +792,7 @@ void Chapter2::runCurrentRuins() {
 		}
 
 		else if (i == "input arrived Arlan position CurrentRuins.Altar") {
-			if (!item_placed && item_taken) {
+			if (!item_placed && (sword_taken || spellbook_taken)) {
 				function.Action("DisableInput()", true);
 				function.Action("ShowDialog()", true);
 				function.Action("ClearDialog()", true);
@@ -854,7 +859,7 @@ void Chapter2::runPastCottage(bool CharacterCheck) {
 	setupPastRuins("PastRuins", CharacterCheck);
 
 	if (CharacterCheck) {
-		function.SetupCharacter("Mathias", "F", "LightArmour", "Long", "Black", "PastCottage.Bed");
+		function.SetupCharacter("Mathias", "F", "HeavyArmour", "Long", "Black", "PastCottage.Bed");
 		CharacterName = "Mathias";
 	}
 	else {
