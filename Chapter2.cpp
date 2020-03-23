@@ -37,6 +37,7 @@ bool hasAppleMoney = false;
 bool hasElderApple = false;
 bool visitedFortuneteller = false;
 bool visitedTownElder = false;
+bool completedErrand = false;
 
 Chapter2::Chapter2() {
 	runSetup();
@@ -391,6 +392,12 @@ void Chapter2::runCurrentTown() {
 									}
 								}
 								hasElderApple = false;
+
+								completedErrand = true;
+								function.Action("EnableIcon(Look Inside Barrel, Hand, CurrentTown.Barrel, Look Inside, true)", true);
+								function.Action("EnableIcon(Look Inside Dirt Pile, Hand, CurrentForestPath.DirtPile, Look Inside, true)", true);
+
+								function.SetupDialogText("You retrieved my apple! Thank you Arlan! Now lets read that book!", "readBook", "Great! What does it say?");
 							}
 							else if (hasFixedLock) {
 								for (int i = 0; i < playerInv.size(); i++) {
@@ -405,11 +412,20 @@ void Chapter2::runCurrentTown() {
 									}
 								}
 								hasFixedLock = false;
+
+								completedErrand = true;
+								function.Action("EnableIcon(Look Inside Barrel, Hand, CurrentTown.Barrel, Look Inside, true)", true);
+								function.Action("EnableIcon(Look Inside Dirt Pile, Hand, CurrentForestPath.DirtPile, Look Inside, true)", true);
+
+								function.SetupDialogText("You fixed my lock! Thank you Arlan! Now lets read that book!", "readBook", "Great! What does it say?");
 							}
 						}
 						else {
 							function.SetupDialogText("Go get your fortune from the fortuneteller!", "end", "ok.");
 						}
+					}
+					else if (completedErrand = true) {
+						function.SetupDialogText("You should look around for an ancient artifact and take it to the ruins past the forest path.", "end", "Okay! Thanks!");
 					}
 				}
 
@@ -470,6 +486,23 @@ void Chapter2::runCurrentTown() {
 					function.Action("SetNarration(Elder Apple Added To Inventory)", true);
 					function.Action("ShowNarration()", true);
 				}
+
+				else if (modified_I == "readBook") {
+					function.Action("SetNarration(The elder begins flipping through the book and mumbling to himself. He tells you the book is about two influential leaders who have fought for years over a great source of power.)", true);
+					function.Action("ShowNarration()", true);
+					function.SetupDialogText("The book says the tale is best told by bringing an ancient relic to the ruins and indulging in the reward.", "whatRuins", "What ruins?");
+				}
+
+				else if (modified_I == "whatRuins") {
+					function.SetupDialogText("Take the eastern forest path just beyond the fortune tellers shop and you will find them.", "completedErrand", "Okay! Thanks!");
+				}
+
+				else if (modified_I == "completedErrand") {
+					function.Action("ClearDialog()", true);
+					function.Action("HideDialog()", true);
+					function.Action("SetNarration(The air shifts around you. You feel like you can go somewhere you couldnt before. You wonder where an ancient relic could be.)", true);
+					function.Action("ShowNarration()", true);
+				}
 			}
 			else if (modified_I == "Enter_AlchemyShop") {
 			function.WalkToPlace("Arlan", "CurrentTown.BrownHouseDoor");
@@ -483,6 +516,31 @@ void Chapter2::runCurrentTown() {
 					function.Action("SetNarration(The door is locked. This store must be closed.)", true);
 					function.Action("ShowNarration()", true);
 				}
+			}
+
+			/*else if (modified_I == "Take_MathiasSword") {
+				function.Action("Take(Arlan, MathiasSword)", true);
+				function.Action("SetNarration(The sword appears ancient and powerful. You wonder if this is the relic the elder mentioned.)", true);
+				function.Action("ShowNarration()", true);
+			}*/
+
+			else if (modified_I == "Look Inside Barrel CurrentTown.Barrel") {
+				function.Action("SetNarration(Theres a sword inside! You take it. It appears ancient and powerful. You wonder if this is the relic the elder mentioned.)", true);
+				function.Action("ShowNarration()", true);
+				playerInv.push_back("MathiasSword");
+			}
+		}
+
+		if (i == "input arrived Arlan position CurrentTown.EastEnd") {
+			if (completedErrand) {
+				function.Transition("Arlan", "CurrentTown.EastEnd", "CurrentForestPath.WestEnd");
+				inCurrentTown = false;
+				inCurrentForestPath = true;
+				runCurrentForestPath();
+			}
+			else {
+				function.Action("SetNarration(A thick mist blocks your path. You can make out a forest bath just beyond the fog. Maybe you should return later.)", true);
+				function.Action("ShowNarration()", true);
 			}
 		}
 
@@ -611,7 +669,7 @@ void Chapter2::runAlchemyShop() {
 
 				if (modified_I == "Answer") {
 					function.Action("ClearDialog()", true);
-					function.SetupDialogText("Give me your hand and I will give you your fortune free of charge.", "Accept", "**Put out your hand**", "Deny", "I don't feel like it.");
+					function.SetupDialogText("Give me your hand and I will give you your fortune free of charge.", "Accept", "**Put out your hand**", "Deny", "I dont feel like it.");
 				}
 				if (modified_I == "Questioning") {
 					function.Action("ClearDialog()", true);
@@ -623,7 +681,7 @@ void Chapter2::runAlchemyShop() {
 				}
 				if (modified_I == "Accept") {
 					function.Action("ClearDialog()", true);
-					function.SetupDialogText("**She takes your hand and begins to read your palm** You carry the burden of responsibility and hold a promising future.", "end", "Vauge and interesting. I'll be leaving now");
+					function.SetupDialogText("**She takes your hand and begins to read your palm** You carry the burden of responsibility and hold a promising future.", "end", "Vauge and interesting. Ill be leaving now");
 					visitedFortuneteller = true;
 				}
 				if (modified_I == "end") {
@@ -687,6 +745,12 @@ void Chapter2::runCurrentForestPath() {
 		else if (i == "input Close List") {
 			function.Action("HideList()", true);
 			function.Action("EnableInput()", true);
+		}
+
+		else if (i == "input Look Inside Dirt Pile CurrentForestPath.DirtPile") {
+			function.Action("SetNarration(There's a book inside! You take it. It appears ancient and unintelligable. And dirty. You wonder if this is the relic the elder mentioned.)", true);
+			function.Action("ShowNarration()", true);
+			playerInv.push_back("ArchieSpellbook");
 		}
 	}
 }
