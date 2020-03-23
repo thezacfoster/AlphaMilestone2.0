@@ -13,6 +13,7 @@ using namespace std;
 
 vector<string> playerInv;
 
+//location booleans
 bool inCurrentTown = true;
 bool inCurrentForestPath = false;
 bool inCurrentRuins = false;
@@ -21,11 +22,15 @@ bool inPastCity = false;
 bool inPastForestPath = false;
 bool inPastRuins = false;
 bool inBlacksmithFoundry = true;
+bool inAlchemyShop = false;
+bool inCurrentCottage = true;
+
+//event booleans
 bool item_taken = false;
 bool item_placed = false;
 bool sword_taken = false;
 bool spellbook_taken = false;
-bool hasStorybook = true;
+bool hasStorybook = false;
 bool hasBrokenLock = false;
 bool hasFixedLock = false;
 bool hasAppleMoney = false;
@@ -43,6 +48,7 @@ Chapter2::~Chapter2() {
 
 bool Chapter2::runSetup() { // runs initial setup for chapter 2. returns true if setup was successful.
 	//location setup calls
+	setupCurrentCottage("ArlanCottage");
 	setupCurrentTown("CurrentTown");
 	setupBlacksmithFoundry("BlacksmithFoundry");
 	setupCurrentForestPath("CurrentForestPath");
@@ -50,18 +56,19 @@ bool Chapter2::runSetup() { // runs initial setup for chapter 2. returns true if
 	setupPastCottage("PastCottage");
 	setupPastForestPath("PastForestPath");
 	setupPastCity("PastCity");
+	setupAlchemyShop("AlchemyShop");
+	function.Action("ShowMenu()", true);
 
 	return true;
 }
 
 void Chapter2::run() { // begins chapter 2's execution
 	//runPastCottage();
-	runCurrentTown();
+	//runCurrentTown();
 	//runCurrentForestPath();
 	//runCurrentRuins();
-	//setupPastRuins("PastRuins");
 	//runPastCottage(false);
-	//setupPastForestPath("PastForestPath");
+	runCurrentCottage();
 }
 
 //Flashback execution function
@@ -92,11 +99,28 @@ void Chapter2::flashback1() {
 }
 
 // location setup functions. return true if setup was successful.
+bool Chapter2::setupCurrentCottage(string name) {
+	currentCottage = Cottage(name);
+
+	//character setup
+	function.SetupCharacter("Arlan", "B", "LightArmour", "Long", "Brown", "ArlanCottage.Bed");
+	function.SetupCharacter("Dad", "B", "Peasant", "Spiky", "Black", "ArlanCottage.Bookshelf");
+
+	//item and placement
+	function.Action("CreateItem(Storybook, BlueBook)", true);
+
+	//icon setup
+	currentCottage.icons.push_back(Icon("Talk_To_Dad", "Talk", "Dad", "Talk to Dad", "true"));
+	currentCottage.icons.push_back(Icon("Open_Door", "Open", "ArlanCottage.Door", "Exit the Cottage", "true"));
+	function.SetupIcons(currentCottage.icons);
+	return true;
+}
+
 bool Chapter2::setupCurrentTown(string name) {
 	currentCity = City(name);
 
 	//character setup
-	function.SetupCharacter("Arlan", "B", "LightArmour", "Long", "Black", "CurrentTown.Fountain");
+	//function.SetupCharacter("Arlan", "B", "LightArmour", "Long", "Black", "CurrentTown.Fountain");
 	function.SetupCharacter("Apple Merchant", "C", "Merchant", "Long", "Blonde", "CurrentTown.Horse");
 	function.SetupCharacter("Town Elder", "H", "Noble", "Musketeer_Full", "Gray", "CurrentTown.Plant");
 
@@ -105,8 +129,8 @@ bool Chapter2::setupCurrentTown(string name) {
 	function.Action("CreateItem(Apple Money, Coin)", true);
 	function.Action("CreateItem(Elder Apple, Apple)", true);
 	function.Action("CreateItem(Broken Lock, Lock)", true);
-	function.Action("CreateItem(Storybook, BlueBook)", true);
-	playerInv.push_back("Storybook");
+	//function.Action("CreateItem(Storybook, BlueBook)", true);
+	//playerInv.push_back("Storybook");
 
 	//icons
 	//Talk To Town Elder
@@ -119,6 +143,7 @@ bool Chapter2::setupCurrentTown(string name) {
 	currentCity.icons.push_back(Icon("Take_MathiasSword", "Hand", "MathiasSword", "Take the sword", "true"));
 	//Enter BlacksmithFoundry
 	currentCity.icons.push_back(Icon("Enter Blacksmith Foundry", "Hand", "CurrentTown.RedHouseDoor", "Enter Blacksmith Foundry", "true"));
+	currentCity.icons.push_back(Icon("Enter_AlchemyShop", "Open", "CurrentTown.BrownHouseDoor", "Enter Alchemy Shop", "true"));
 	function.SetupIcons(currentCity.icons);
 
 	return true;
@@ -139,6 +164,20 @@ bool Chapter2::setupBlacksmithFoundry(string name) {
 	//Exit Blacksmith Foundry
 	BlacksmithFoundry.icons.push_back(Icon("Exit Blacksmith Foundry", "Hand", "BlacksmithFoundry.Door", "Exit Blacksmith Foundry", "true"));
 	function.SetupIcons(BlacksmithFoundry.icons);
+
+	return true;
+}
+
+bool Chapter2::setupAlchemyShop(string name) {
+	Alchemy = AlchemyShop(name);
+
+	//character setup
+	function.SetupCharacter("Fortuneteller", "G", "Witch", "Ponytail", "Gray", "AlchemyShop.AlchemistTable");
+
+	//icon setup
+	Alchemy.icons.push_back(Icon("Talk_To_FortuneTeller", "Talk", "Fortuneteller", "Talk to Fortune Teller", "true"));
+	Alchemy.icons.push_back(Icon("Exit_Shop", "Open", "AlchemyShop.Door", "Exit Alchemy Shop", "true"));
+	function.SetupIcons(Alchemy.icons);
 
 	return true;
 }
@@ -193,7 +232,7 @@ bool Chapter2::setupPastCottage(string name) {
 	pastCottage.icons.push_back(Icon("Read", "Research", "Letter", "Read the Letter", "true"));
 	function.SetupIcons(pastCottage.icons);
 
-	function.Action("ShowMenu()", true);
+	//function.Action("ShowMenu()", true);
 
 	return true;
 }
@@ -258,6 +297,58 @@ bool Chapter2::setupPastRuins(string name, bool Enemy) {
 }
 
 // location execution functions.
+void Chapter2::runCurrentCottage() {
+	while (inCurrentCottage) {
+		string i;
+		getline(cin, i);
+
+		//Gets the first word that isn't "input"
+		modified_I = function.splitInput(i, 6, false);
+
+		bool inputWasCommon = function.checkCommonKeywords(i, modified_I, "Arlan", playerInv);
+
+		if (!inputWasCommon) {
+			if (modified_I == "Talk_To_Dad") {
+				function.SetupDialog("Arlan", "Dad", true);
+				function.Action("ClearDialog()", true);
+				if (!hasStorybook) {
+					function.SetupDialogText("Arlan! Take this book of stories and ask the Town Elder to tell you about them.", "takeBook", "Sure thing Dad!");
+					//function.Action("SetDialog(Arlan! Take this book of stories and ask the Town Elder to tell you about them [takeBook | Sure thing Dad!])", true);
+				}
+				else {
+					function.SetupDialogText("Go talk to the Town Elder about the stroybook.", "end", "Will do!");
+					//function.Action("SetDialog(Go talk to the Town Elder about the stroybook.[end | Will do!])", true);
+				}
+			}
+			else if (modified_I == "Selected") {
+				modified_I = function.splitInput(i, 0, true);
+
+				if (modified_I == "takeBook") {
+					function.Action("SetNarration(You have taken the Storybook)", true);
+					function.Action("ShowNarration()", true);
+					playerInv.push_back("Storybook");
+					hasStorybook = true;
+					function.SetupDialogText("Have fun!", "end", "ok!");
+				}
+			}
+			else if (modified_I == "Open_Door") {
+				if (hasStorybook) {
+					function.Transition("Arlan", "ArlanCottage.Door", "CurrentTown.BlueHouseDoor");
+					inCurrentTown = true;
+					inCurrentCottage = false;
+					runCurrentTown();
+				}
+				else {
+					function.SetupDialog("Arlan", "Dad", true);
+					function.Action("ClearDialog()", true);
+					function.SetupDialogText("Arlan! Come over here. I have something for you.", "end", "Ok");
+					//function.Action("SetDialog(Arlan! Come over here.I have something for you.[end| Ok])", true);
+				}
+			}
+		}
+	}
+}
+
 void Chapter2::runCurrentTown() {
 	while (inCurrentTown) {
 		string i;
@@ -266,7 +357,7 @@ void Chapter2::runCurrentTown() {
 		//Gets the first word that isn't "input"
 		modified_I = function.splitInput(i, 6, false);
 
-		bool inputWasCommon = function.checkCommonKeywords(i, modified_I, "Arlan", arlanInv);
+		bool inputWasCommon = function.checkCommonKeywords(i, modified_I, "Arlan", playerInv);
 
 		if (!inputWasCommon) {
 			//If it's under the "Talk" keyword
@@ -380,6 +471,19 @@ void Chapter2::runCurrentTown() {
 					function.Action("ShowNarration()", true);
 				}
 			}
+			else if (modified_I == "Enter_AlchemyShop") {
+			function.WalkToPlace("Arlan", "CurrentTown.BrownHouseDoor");
+				if (visitedTownElder) {
+					function.Transition("Arlan", "CurrentTown.BrownHouseDoor", "AlchemyShop.Door");
+					inAlchemyShop = true;
+					inCurrentTown = false;
+					runAlchemyShop();
+				}
+				else {
+					function.Action("SetNarration(The door is locked. This store must be closed.)", true);
+					function.Action("ShowNarration()", true);
+				}
+			}
 		}
 
 		if (i == "input Enter Blacksmith Foundry CurrentTown.RedHouseDoor") {
@@ -419,7 +523,7 @@ void Chapter2::runBlacksmithFoundry() {
 		//Gets the first word that isn't "input"
 		modified_I = function.splitInput(i, 6, false);
 
-		bool inputWasCommon = function.checkCommonKeywords(i, modified_I, "Arlan", arlanInv);
+		bool inputWasCommon = function.checkCommonKeywords(i, modified_I, "Arlan", playerInv);
 
 		if (!inputWasCommon) {
 			//If it's under the "Talk" keyword
@@ -487,6 +591,56 @@ void Chapter2::runBlacksmithFoundry() {
 	}
 }
 
+void Chapter2::runAlchemyShop() {
+	while (inAlchemyShop) {
+		string i;
+		getline(cin, i);
+
+		//Gets the first word that isn't "input"
+		modified_I = function.splitInput(i, 6, false);
+
+		bool inputWasCommon = function.checkCommonKeywords(i, modified_I, "Arlan", playerInv);
+
+		if (!inputWasCommon) {
+			if (modified_I == "Talk_To_FortuneTeller") {
+				function.SetupDialog("Arlan", "Fortuneteller", true);
+				function.SetupDialogText("Oooh a customer... Arlan is it?", "Answer", "Yes I am Arlan. I have come for a fortune telling.", "Questioning", "I have never met you. How do you know who I am ?");
+			}
+			else if (modified_I == "Selected") {
+				modified_I = function.splitInput(i, 0, true);
+
+				if (modified_I == "Answer") {
+					function.Action("ClearDialog()", true);
+					function.SetupDialogText("Give me your hand and I will give you your fortune free of charge.", "Accept", "**Put out your hand**", "Deny", "I don't feel like it.");
+				}
+				if (modified_I == "Questioning") {
+					function.Action("ClearDialog()", true);
+					function.SetupDialogText("I am a fortune teller. I know many things. Would like your fortune read?", "Answer", "Yes I am Arlan and I would like a fortune telling.", "Deny", "I do not want a fortune telling.");
+				}
+				if (modified_I == "Deny") {
+					function.Action("ClearDialog()", true);
+					function.SetupDialogText("Come back when you want your fortune read.", "end", "Leave");
+				}
+				if (modified_I == "Accept") {
+					function.Action("ClearDialog()", true);
+					function.SetupDialogText("**She takes your hand and begins to read your palm** You carry the burden of responsibility and hold a promising future.", "end", "Vauge and interesting. I'll be leaving now");
+					visitedFortuneteller = true;
+				}
+				if (modified_I == "end") {
+					function.Action("ClearDialog()", true);
+					function.Action("HideDialog()", true);
+				}
+			}
+			else if (modified_I == "Exit_Shop") {
+				function.Transition("Arlan", "AlchemyShop.Door", "CurrentTown.BrownHouseDoor");
+				inCurrentTown = true;
+				inAlchemyShop = false;
+				runCurrentTown();
+			}
+		}
+	}
+}
+
 void Chapter2::runCurrentForestPath() {
 	while (inCurrentForestPath) {
 		string i;
@@ -495,7 +649,7 @@ void Chapter2::runCurrentForestPath() {
 		//Gets the first word that isn't "input"
 		modified_I = function.splitInput(i, 6, false);
 
-		bool inputWasCommon = function.checkCommonKeywords(i, modified_I, "Arlan", arlanInv);
+		bool inputWasCommon = function.checkCommonKeywords(i, modified_I, "Arlan", playerInv);
 
 		/*if (!inputWasCommon) {
 			//If it's under the "Talk" keyword
@@ -545,7 +699,7 @@ void Chapter2::runCurrentRuins() {
 		//Gets the first word that isn't "input"
 		modified_I = function.splitInput(i, 6, false);
 
-		bool inputWasCommon = function.checkCommonKeywords(i, modified_I, "Arlan", arlanInv);
+		bool inputWasCommon = function.checkCommonKeywords(i, modified_I, "Arlan", playerInv);
 
 		if (!inputWasCommon) {
 			//If it's under the "Talk" keyword

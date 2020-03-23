@@ -123,6 +123,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AlchemyShop.cpp" />
     <ClCompile Include="Blacksmith.cpp" />
     <ClCompile Include="City.cpp" />
     <ClCompile Include="Cottage.cpp" />
@@ -134,6 +135,7 @@
     <ClCompile Include="Chapter2.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AlchemyShop.h" />
     <ClInclude Include="Blacksmith.h" />
     <ClInclude Include="Chapter2.h" />
     <ClInclude Include="City.h" />

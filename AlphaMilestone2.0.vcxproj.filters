@@ -48,6 +48,9 @@
     <ClCompile Include="Blacksmith.cpp">
       <Filter>Source Files\Places</Filter>
     </ClCompile>
+    <ClCompile Include="AlchemyShop.cpp">
+      <Filter>Source Files\Places</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Chapter2.h">
@@ -72,6 +75,9 @@
       <Filter>Header Files\Places</Filter>
     </ClInclude>
     <ClInclude Include="Blacksmith.h">
+      <Filter>Header Files\Places</Filter>
+    </ClInclude>
+    <ClInclude Include="AlchemyShop.h">
       <Filter>Header Files\Places</Filter>
     </ClInclude>
   </ItemGroup>
