@@ -339,7 +339,10 @@ void Chapter2::runCurrentCottage() {
 					runCurrentTown();
 				}
 				else {
-					function.SetupDialog("Arlan", "Dad", true);
+					function.WalkToPlace("Arlan", "ArlanCottage.Door");
+					function.Action("ShowDialog()", true);
+					function.Action("SetLeft(Arlan)", true);
+					function.Action("SetRight(Dad)", true);
 					function.Action("ClearDialog()", true);
 					function.SetupDialogText("Arlan! Come over here. I have something for you.", "end", "Ok");
 					//function.Action("SetDialog(Arlan! Come over here.I have something for you.[end| Ok])", true);
@@ -534,7 +537,7 @@ void Chapter2::runCurrentTown() {
 				runCurrentForestPath();
 			}
 			else {
-				function.Action("SetNarration(A thick mist blocks your path. You can make out a forest bath just beyond the fog. Maybe you should return later.)", true);
+				function.Action("SetNarration(A thick mist blocks your path. You can make out a forest path just beyond the fog. Maybe you should return later.)", true);
 				function.Action("ShowNarration()", true);
 			}
 		}
@@ -665,7 +668,12 @@ void Chapter2::runAlchemyShop() {
 		if (!inputWasCommon) {
 			if (modified_I == "Talk_To_FortuneTeller") {
 				function.SetupDialog("Arlan", "Fortuneteller", true);
-				function.SetupDialogText("Oooh a customer... Arlan is it?", "Answer", "Yes I am Arlan. I have come for a fortune telling.", "Questioning", "I have never met you. How do you know who I am ?");
+				if (!visitedFortuneteller) {
+					function.SetupDialogText("Oooh a customer... Arlan is it?", "Answer", "Yes I am Arlan. I have come for a fortune telling.", "Questioning", "I have never met you. How do you know who I am ?");
+				}
+				else {
+					function.SetupDialogText("Thank you for coming to see me. I wish you good fortune in your journey.", "end", "Thank you.");
+				}
 			}
 			else if (modified_I == "Selected") {
 				modified_I = function.splitInput(i, 0, true);
@@ -912,6 +920,7 @@ void Chapter2::runPastCottage(bool CharacterCheck) {
 					runPastCity(CharacterCheck);
 				}
 				else {
+					function.WalkToPlace(CharacterName, "PastCottage.Door");
 					function.Action("SetNarration(I should read that letter I left on the shelf)", true);
 					function.Action("ShowNarration()", true);
 				}
