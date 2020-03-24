@@ -37,6 +37,7 @@ bool hasElderApple = false;
 bool visitedFortuneteller = false;
 bool visitedTownElder = false;
 bool completedErrand = false;
+bool ArchieEnemy = false;
 
 Chapter2::Chapter2() {
 	runSetup();
@@ -94,12 +95,7 @@ void Chapter2::flashback1() {
 	function.Action("SetCameraMode(Follow)", true);
 	function.Action("Die(Arlan)", true);
 	function.Action("FadeOut()", true);
-	if (sword_taken) {
-		runPastCottage(sword_taken);
-	}
-	else if (spellbook_taken) {
-		runPastCottage(spellbook_taken);
-	}
+	runPastCottage(ArchieEnemy);
 	//
 }
 
@@ -832,7 +828,7 @@ void Chapter2::runCurrentRuins() {
 					}
 				}
 				function.Action("SetPosition(MathiasSword, CurrentRuins.Altar.Top)", true);
-				spellbook_taken = false;
+				ArchieEnemy = true;
 				item_placed = true;
 				function.Action("CreateEffect(CurrentRuins.Altar, Resurrection)", true);
 				function.Action("EnableEffect(CurrentRuins.Altar, Resurrection)", true);
@@ -847,6 +843,7 @@ void Chapter2::runCurrentRuins() {
 		}
 
 		else if (i == "input Selected placeArchieSpellbook") {
+			function.Action("HideDialog()", true);
 			if (spellbook_taken) {
 				for (int i = 0; i < playerInv.size(); i++) {
 					if (playerInv[i] == "ArchieSpellbook") {
@@ -854,7 +851,7 @@ void Chapter2::runCurrentRuins() {
 					}
 				}
 				function.Action("SetPosition(ArchieSpellbook, CurrentRuins.Altar.Top)", true);
-				sword_taken = false;
+				ArchieEnemy = false;
 				item_placed = true;
 				function.Action("CreateEffect(CurrentRuins.Altar, Resurrection)", true);
 				function.Action("EnableEffect(CurrentRuins.Altar, Resurrection)", true);
