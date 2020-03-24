@@ -94,7 +94,12 @@ void Chapter2::flashback1() {
 	function.Action("SetCameraMode(Follow)", true);
 	function.Action("Die(Arlan)", true);
 	function.Action("FadeOut()", true);
-	runPastCottage(sword_taken);
+	if (sword_taken) {
+		runPastCottage(sword_taken);
+	}
+	else if (spellbook_taken) {
+		runPastCottage(spellbook_taken);
+	}
 	//
 }
 
@@ -806,11 +811,19 @@ void Chapter2::runCurrentRuins() {
 				function.Action("ClearDialog()", true);
 				function.Action("SetLeft(Arlan)", true);
 				function.Action("EnableInput()", true);
-				function.Action("SetDialog(You hear a whisper. \"Place the tribute to see the past.\" Place your item? [placeSwordSpellbook|Yes] [end|No])", true);
+				if (sword_taken && spellbook_taken) {
+					function.Action("SetDialog(You hear a whisper. \"Place the tribute to see the past.\" Place your item? [placeMathiasSword | Place Mathias Sword.] [placeArchieSpellbook | Place Archie Spellbook.])", true);
+				}
+				else if (sword_taken) {
+					function.Action("SetDialog(You hear a whisper. \"Place the tribute to see the past.\" Place your item? [placeMathiasSword | Place Mathias Sword.])", true);
+				}
+				else if (spellbook_taken) {
+					function.Action("SetDialog(You hear a whisper. \"Place the tribute to see the past.\" Place your item? [placeArchieSpellbook | Place Archie Spellbook.])", true);
+				}
 			}
 		}
 
-		else if (i == "input Selected placeSwordSpellbook") {
+		else if (i == "input Selected placeMathiasSword") {
 			function.Action("HideDialog()", true);
 			if (sword_taken) {
 				for (int i = 0; i < playerInv.size(); i++) {
@@ -819,25 +832,40 @@ void Chapter2::runCurrentRuins() {
 					}
 				}
 				function.Action("SetPosition(MathiasSword, CurrentRuins.Altar.Top)", true);
+				spellbook_taken = false;
+				item_placed = true;
+				function.Action("CreateEffect(CurrentRuins.Altar, Resurrection)", true);
+				function.Action("EnableEffect(CurrentRuins.Altar, Resurrection)", true);
+				this_thread::sleep_for(chrono::milliseconds(2000));
+				function.Action("SetPosition(MathiasSword)", true);
+				function.Action("SetPosition(ArchieSpellbook)", true);
+				this_thread::sleep_for(chrono::milliseconds(2000));
+				function.Action("SetPosition(LeaderFlashPotion, CurrentRuins.Altar.Top)", true);
+				this_thread::sleep_for(chrono::milliseconds(2000));
+				function.Action("DisableEffect(CurrentRuins.Altar)", true);
 			}
-			else if (spellbook_taken) {
+		}
+
+		else if (i == "input Selected placeArchieSpellbook") {
+			if (spellbook_taken) {
 				for (int i = 0; i < playerInv.size(); i++) {
 					if (playerInv[i] == "ArchieSpellbook") {
 						playerInv.erase(playerInv.begin() + i);
 					}
 				}
 				function.Action("SetPosition(ArchieSpellbook, CurrentRuins.Altar.Top)", true);
+				sword_taken = false;
+				item_placed = true;
+				function.Action("CreateEffect(CurrentRuins.Altar, Resurrection)", true);
+				function.Action("EnableEffect(CurrentRuins.Altar, Resurrection)", true);
+				this_thread::sleep_for(chrono::milliseconds(2000));
+				function.Action("SetPosition(MathiasSword)", true);
+				function.Action("SetPosition(ArchieSpellbook)", true);
+				this_thread::sleep_for(chrono::milliseconds(2000));
+				function.Action("SetPosition(LeaderFlashPotion, CurrentRuins.Altar.Top)", true);
+				this_thread::sleep_for(chrono::milliseconds(2000));
+				function.Action("DisableEffect(CurrentRuins.Altar)", true);
 			}
-			item_placed = true;
-			function.Action("CreateEffect(CurrentRuins.Altar, Resurrection)", true);
-			function.Action("EnableEffect(CurrentRuins.Altar, Resurrection)", true);
-			this_thread::sleep_for(chrono::milliseconds(2000));
-			function.Action("SetPosition(MathiasSword)", true);
-			function.Action("SetPosition(ArchieSpellbook)", true);
-			this_thread::sleep_for(chrono::milliseconds(2000));
-			function.Action("SetPosition(LeaderFlashPotion, CurrentRuins.Altar.Top)", true);
-			this_thread::sleep_for(chrono::milliseconds(2000));
-			function.Action("DisableEffect(CurrentRuins.Altar)", true);
 		}
 
 		else if (i == "input Selected end") {
