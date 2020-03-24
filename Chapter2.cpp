@@ -761,7 +761,7 @@ void Chapter2::runCurrentForestPath() {
 
 		else if (i == "input Look Inside Dirt Pile CurrentForestPath.DirtPile") {
 			function.WalkToPlace("Arlan", "CurrentForestPath.DirtPile");
-			function.Action("SetNarration(There's a book inside! You take it. It appears ancient and unintelligable. And dirty. You wonder if this is the relic the elder mentioned.)", true);
+			function.Action("SetNarration(Theres a book inside! You take it. It appears ancient and unintelligable. And dirty. You wonder if this is the relic the elder mentioned.)", true);
 			function.Action("ShowNarration()", true);
 			playerInv.push_back("ArchieSpellbook");
 			spellbook_taken = true;
